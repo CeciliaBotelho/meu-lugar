@@ -86,7 +86,7 @@ export function render() {
         <h2>Como você<br>está se sentindo?</h2>
         <p>${mood ? `Hoje você está <b>${esc(mood.name.toLowerCase())}</b>${energy ? ` · energia ${esc(energy.name.toLowerCase())}` : ''}.` : 'Um pouquinho de atenção para você.'}</p>
       </div>
-      <div class="ce-flower" aria-hidden="true">✳</div>
+      <div class="ce-flower" aria-hidden="true"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"><line x1="6.0" y1="50.0" x2="94.0" y2="50.0"/><line x1="18.9" y1="18.9" x2="81.1" y2="81.1"/><line x1="50.0" y1="6.0" x2="50.0" y2="94.0"/><line x1="81.1" y1="18.9" x2="18.9" y2="81.1"/></svg></div>
       <div class="ce-moods" role="group" aria-label="Humor de hoje">
         ${QUICK.map((q) => { const m = findMood(q.id); return `<button class="${day.mood === q.id ? 'chosen' : ''}" data-action="quick-mood" data-mood="${q.id}" aria-label="${esc(m.name)}" aria-pressed="${day.mood === q.id}"><span>${q.svg ? ico(q.svg, 'ce-mood-svg') : q.g}</span><small>${esc(m.name)}</small></button>`; }).join('')}
         <button class="${otherMood ? 'chosen' : ''}" data-action="open-checkin" aria-label="Outros humores"><span>${otherMood ? otherMood.emoji : '…'}</span><small>${otherMood ? esc(otherMood.name) : 'Outro'}</small></button>
