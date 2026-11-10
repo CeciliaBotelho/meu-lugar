@@ -3,7 +3,7 @@
  * Seus registros ficam no IndexedDB e nunca passam por aqui nem vão para a internet.
  * Para publicar uma nova versão, aumente APP_VERSION.
  */
-const APP_VERSION = '1.0.1';
+const APP_VERSION = '1.1.0';
 const CACHE = `cantinho-da-ce-${APP_VERSION}`;
 
 const ASSETS = [
@@ -28,6 +28,7 @@ const ASSETS = [
   './js/views/cycle.js',
   './js/views/history.js',
   './js/views/settings.js',
+  './js/views/books.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',

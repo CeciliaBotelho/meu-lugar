@@ -71,6 +71,7 @@ export function confetti(count = 90) {
 }
 
 export function hearts(count = 8) {
+  if (count < 6) return; // pequenos toques sem efeito, visual mais limpo
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const root = document.getElementById('fx-root');
   const emo = ['💗', '💕', '🌸', '💖', '🩷'];

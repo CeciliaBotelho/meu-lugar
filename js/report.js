@@ -126,6 +126,15 @@ export function dayText(date) {
   if (day.cycleNotes) L.push(`  Observações: ${day.cycleNotes}`);
   L.push('');
 
+  const fin = [...state.books.values()].filter((b) => b.status === 'read' && b.endDate === date);
+  const sta = [...state.books.values()].filter((b) => b.startDate === date);
+  if (fin.length || sta.length) {
+    L.push('📚 LIVROS');
+    for (const b of fin) L.push(`  Terminei: ${b.title}${b.author ? ' — ' + b.author : ''}${b.rating ? ' (nota ' + fmtNum(b.rating) + '/5)' : ''}`);
+    for (const b of sta) L.push(`  Comecei: ${b.title}${b.author ? ' — ' + b.author : ''}`);
+    L.push('');
+  }
+
   L.push('💗 COMO FOI MEU DIA?');
   L.push(day.journal ? day.journal : '  (sem texto)');
   L.push('');

@@ -234,7 +234,7 @@ export const actions = {
   'ex-history'(el) {
     const name = el.dataset.name;
     const h = loadHistory(name).reverse();
-    openSheet(`<h2>📈 ${esc(name)}</h2>
+    openSheet(`<h2>${esc(name)}</h2>
       ${h.length ? `<ul class="detail-list">${h.map((x) => `<li><div class="dl-title"><span>${fmtShort(x.date)}</span><span style="color:var(--pink-strong)">${esc(fmtNum(x.load))} kg</span></div><div class="dl-sub">${esc(x.workout)} · ${esc([x.sets ? x.sets + ' ×' : '', x.reps].filter(Boolean).join(' '))}</div></li>`).join('')}</ul>` : '<div class="empty"><span class="big">🌱</span>Nenhuma carga registrada ainda.</div>'}
       <div class="sheet-actions"><button class="btn" data-close>Fechar</button></div>`);
   },
@@ -245,7 +245,7 @@ export const actions = {
   'new-workout'() { workoutSheet(null); },
 
   'edit-prefs'() {
-    openSheet(`<h2>💗 Minhas preferências</h2>
+    openSheet(`<h2>Minhas preferências</h2>
       <label class="field"><span>Uma por linha</span><textarea class="input" id="pf" rows="8">${esc(state.settings.preferences || '')}</textarea></label>
       <div class="sheet-actions"><button class="btn ghost" data-close>Cancelar</button><button class="btn" id="ok">Salvar</button></div>`, {
       onMount(s, close) { s.querySelector('#ok').addEventListener('click', async () => { await setSetting('preferences', s.querySelector('#pf').value); close(); rerender(); }); }

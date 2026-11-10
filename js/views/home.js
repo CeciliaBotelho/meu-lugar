@@ -5,6 +5,7 @@ import { go, rerender } from '../router.js';
 import { stats, infoFor, PHASES } from '../cycle.js';
 import { dayKcal, mealsRegistered, plannedMeals, workoutEntries, exercisesDone, findMood, findEnergy, intensityName } from '../report.js';
 import { MOODS, ENERGY, SLEEP_QUALITY } from '../defaults.js';
+import { readInYear } from './books.js';
 
 export function render() {
   const today = todayKey();
@@ -64,31 +65,37 @@ export function render() {
   </div>` : ''}
 
   <div class="grid2">
-    <div class="stat" data-action="go" data-tab="food"><span class="lbl">🔥 Calorias registradas</span><span class="val">${kcal}<small style="font-size:13px"> kcal</small></span><span class="sub">referência ${state.settings.kcalReference} kcal</span></div>
-    <div class="stat" data-action="go" data-tab="food"><span class="lbl">🥤 Refeições</span><span class="val">${meals}<small style="font-size:13px">/${planned}</small></span><span class="sub">${meals ? 'registradas hoje' : 'nenhuma ainda'}</span></div>
-    <div class="stat lilac" data-action="go" data-tab="workouts"><span class="lbl">💪 Treino do dia</span><span class="val sm">${wsText}</span></div>
-    <div class="stat lilac" data-action="go" data-tab="workouts"><span class="lbl">✅ Exercícios concluídos</span><span class="val">${exDone}${totalEx ? `<small style="font-size:13px">/${totalEx}</small>` : ''}</span></div>
+    <div class="stat" data-action="go" data-tab="food"><span class="lbl">Calorias registradas</span><span class="val">${kcal}<small style="font-size:13px"> kcal</small></span><span class="sub">referência ${state.settings.kcalReference} kcal</span></div>
+    <div class="stat" data-action="go" data-tab="food"><span class="lbl">Refeições</span><span class="val">${meals}<small style="font-size:13px">/${planned}</small></span><span class="sub">${meals ? 'registradas hoje' : 'nenhuma ainda'}</span></div>
+    <div class="stat lilac" data-action="go" data-tab="workouts"><span class="lbl">Treino do dia</span><span class="val sm">${wsText}</span></div>
+    <div class="stat lilac" data-action="go" data-tab="workouts"><span class="lbl">Exercícios concluídos</span><span class="val">${exDone}${totalEx ? `<small style="font-size:13px">/${totalEx}</small>` : ''}</span></div>
     <div class="stat peach wide" data-action="open-checkin">
-      <span class="lbl">💭 Humor e energia</span>
+      <span class="lbl">Humor e energia</span>
       ${mood || energy ? `<span class="val sm">${mood ? `${mood.emoji} ${esc(mood.name)}` : ''}${mood && energy ? ' · ' : ''}${energy ? `${energy.emoji} Energia ${esc(energy.name.toLowerCase())}` : ''}</span>` : '<span class="sub">Ainda não registrados hoje — toque para registrar.</span>'}
     </div>
   </div>
 
   ${cycleCard}
 
-  <button class="btn block big" data-action="open-checkin">🌸 Registrar meu dia</button>
+  ${booksCard()}
 
-  <div class="card soft mt">
-    <div class="card-head"><div class="ttl"><span class="emoji">✨</span><h3>Atalhos</h3></div></div>
-    <div class="btn-row">
-      <button class="btn soft small" data-action="go" data-tab="food">🥤 Refeições</button>
-      <button class="btn soft small" data-action="go" data-tab="workouts">💪 Treino</button>
-      <button class="btn soft small" data-action="go" data-tab="cycle">🌙 Ciclo</button>
-      <button class="btn soft small" data-action="go" data-tab="history">🌷 Diário</button>
-    </div>
-  </div>
+  <button class="btn block big" data-action="open-checkin">Registrar meu dia</button>
+
   <p class="tiny faint center mt">🔒 Seus registros ficam salvos somente neste aparelho.</p>
   `;
+}
+
+function booksCard() {
+  const y = Number(todayKey().slice(0, 4));
+  const n = readInYear(y).length;
+  const goal = Number(state.settings.readingGoal) || 0;
+  const reading = [...state.books.values()].filter((b) => b.status === 'reading');
+  return `
+  <div class="card lilac" data-action="go" data-tab="books" style="cursor:pointer">
+    <div class="card-head"><div class="ttl"><span class="emoji">📚</span><h3>Meus livros</h3></div><span class="badge lilac">${n}${goal ? '/' + goal : ''} em ${y}</span></div>
+    ${goal ? `<div class="progress lilac"><span style="width:${Math.min(100, n / goal * 100)}%"></span></div>` : ''}
+    <p class="small muted mt-s">${reading.length ? `📖 Lendo agora: <b>${reading.slice(0, 2).map((b) => esc(b.title)).join(', ')}</b>` : n ? 'Toque para ver seus livros e notas. 💜' : 'Registre os livros que você leu este ano, com nota e anotações. 💜'}</p>
+  </div>`;
 }
 
 /** Folha "Registrar meu dia": humor, energia, sono e diário de hoje (ou da data escolhida). */
@@ -97,7 +104,7 @@ export function openCheckin(date = todayKey()) {
   let flushJournal = () => {};
   const chipRow = (list, field, cur) => list.map((o) => `<button class="chip ${cur === o.id ? 'on' : ''}" data-ck="${field}" data-v="${o.id}">${o.emoji} ${esc(o.name)}</button>`).join('');
   openSheet(`
-    <h2>🌸 Registrar meu dia</h2>
+    <h2>Registrar meu dia</h2>
     <p class="small muted" style="margin:-6px 0 12px">${esc(fmtLong(date))}</p>
     <div class="form">
       <div><div class="small" style="font-weight:800;margin-bottom:6px">Como você está? 💭</div><div class="chips" id="ck-mood">${chipRow(MOODS, 'mood', d.mood)}</div></div>

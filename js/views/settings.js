@@ -5,26 +5,26 @@ import { buildBackup, encryptBackup, decryptBackup, validateBackup, restore, bac
 import { clearAll } from '../db.js';
 import { fmtShort } from '../dates.js';
 
-export const APP_VERSION = '1.0.1';
+export const APP_VERSION = '1.1.0';
 
 export function render() {
   const lb = state.settings.lastBackup;
   const st = state.ui.storage || {};
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   return `
-  <div class="section-title" style="margin-top:4px"><h2>⚙️ Ajustes e backup</h2><button class="link-btn" data-action="go" data-tab="home">Fechar</button></div>
+  <div class="section-title" style="margin-top:4px"><h2>Ajustes e backup</h2><button class="link-btn" data-action="go" data-tab="home">Fechar</button></div>
 
   <div class="card pink">
     <div class="card-head"><div class="ttl"><span class="emoji">☁️</span><h3>Backup</h3></div></div>
     <p class="small">${lb ? `Último backup confirmado: <b>${esc(new Date(lb).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }))}</b>` : 'Você ainda não confirmou nenhum backup.'}</p>
-    <p class="tiny muted mt-s">${state.days.size} dia(s) com registros neste aparelho.</p>
+    <p class="tiny muted mt-s">${state.days.size} dia(s) com registros e ${state.books.size} livro(s) neste aparelho.</p>
     <div class="btn-row mt">
       <button class="btn" data-action="backup-save">Salvar backup 💗</button>
       <button class="btn ghost" data-action="backup-restore">Restaurar backup 🌸</button>
     </div>
     <input type="file" id="restore-file" accept="application/json,.json" class="hidden" data-action-change="backup-file">
     <label class="row small mt"><input type="checkbox" data-action-change="toggle-reminder" ${state.settings.backupReminder !== false ? 'checked' : ''} style="width:22px;height:22px;accent-color:#e84f8c"> Lembrar de fazer backup todo mês</label>
-    <div class="notice mt">O backup é um arquivo <b>.json</b> com tudo: alimentação, treinos, cargas, ciclo, sintomas, humor, sono, diário e configurações. No iPhone, toque em <b>Salvar em Arquivos</b> e escolha <b>iCloud Drive</b> para guardar fora do aparelho. Não há sincronização automática com o iCloud — o backup é feito por você.</div>
+    <div class="notice mt">O backup é um arquivo <b>.json</b> com tudo: alimentação, treinos, cargas, ciclo, sintomas, humor, sono, diário, livros e configurações. No iPhone, toque em <b>Salvar em Arquivos</b> e escolha <b>iCloud Drive</b> para guardar fora do aparelho. Não há sincronização automática com o iCloud — o backup é feito por você.</div>
   </div>
 
   <div class="card">
@@ -174,7 +174,7 @@ async function confirmRestore(obj) {
   const when = valid.exportedAt ? new Date(valid.exportedAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : 'data desconhecida';
   const ok = await confirmSheet({
     title: 'Restaurar este backup? 🌸',
-    text: `Backup de <b>${esc(when)}</b> com <b>${valid.days.length}</b> dia(s) de registros${valid.first ? ` (${fmtShort(valid.first)} a ${fmtShort(valid.last)})` : ''}.<br><br>Isto vai <b>substituir</b> todos os registros atuais deste aparelho (${state.days.size} dia(s)). Se quiser, faça um backup dos dados atuais antes.`,
+    text: `Backup de <b>${esc(when)}</b> com <b>${valid.days.length}</b> dia(s) de registros e <b>${valid.books.length}</b> livro(s)${valid.first ? ` (${fmtShort(valid.first)} a ${fmtShort(valid.last)})` : ''}.<br><br>Isto vai <b>substituir</b> todos os registros atuais deste aparelho (${state.days.size} dia(s)). Se quiser, faça um backup dos dados atuais antes.`,
     ok: 'Substituir e restaurar', danger: true
   });
   if (!ok) return toast('Restauração cancelada. Nada foi alterado.');

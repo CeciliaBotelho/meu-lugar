@@ -8,6 +8,7 @@ import { mealEntries, mealKcal, dayKcal, mealsRegistered, workoutEntries, workou
 import { bars, line, hbars } from '../charts.js';
 import { MOODS, ENERGY } from '../defaults.js';
 import { loadHistory } from './workouts.js';
+import { stars } from './books.js';
 
 const hDate = () => (state.ui.histDate && isValidKey(state.ui.histDate) ? state.ui.histDate : todayKey());
 
@@ -41,17 +42,18 @@ function dayView() {
   <div class="section-title"><h2 style="font-size:17px">${esc(fmtLong(date))}</h2></div>
 
   <div class="grid2">
-    <div class="stat"><span class="lbl">🔥 Calorias</span><span class="val">${dayKcal(day)}<small style="font-size:13px"> kcal</small></span></div>
-    <div class="stat"><span class="lbl">🥤 Refeições</span><span class="val">${mealsRegistered(day)}</span><span class="sub">${(day.extras || []).length ? `+ ${day.extras.length} extra(s)` : ''}</span></div>
-    <div class="stat lilac"><span class="lbl">💪 Treino</span><span class="val sm">${day.rest ? 'Descanso 😴' : ws.length ? ws.map((w) => esc(w.name)).join(' + ') : '—'}</span></div>
-    <div class="stat lilac"><span class="lbl">✅ Exercícios</span><span class="val">${exercisesDone(day)}${totalEx ? `<small style="font-size:13px">/${totalEx}</small>` : ''}</span></div>
-    <div class="stat peach"><span class="lbl">🌙 Fase estimada</span><span class="val sm">${info ? `${PHASES[info.phase].emoji} ${PHASES[info.phase].short}` : '—'}</span><span class="sub">${info ? `dia ${info.cycleDay} do ciclo` : ''}</span></div>
-    <div class="stat peach"><span class="lbl">💭 Humor e energia</span><span class="val sm">${mood ? mood.emoji + ' ' + esc(mood.name) : '—'}</span><span class="sub">${energy ? 'Energia ' + esc(energy.name.toLowerCase()) : ''}</span></div>
+    <div class="stat"><span class="lbl">Calorias</span><span class="val">${dayKcal(day)}<small style="font-size:13px"> kcal</small></span></div>
+    <div class="stat"><span class="lbl">Refeições</span><span class="val">${mealsRegistered(day)}</span><span class="sub">${(day.extras || []).length ? `+ ${day.extras.length} extra(s)` : ''}</span></div>
+    <div class="stat lilac"><span class="lbl">Treino</span><span class="val sm">${day.rest ? 'Descanso 😴' : ws.length ? ws.map((w) => esc(w.name)).join(' + ') : '—'}</span></div>
+    <div class="stat lilac"><span class="lbl">Exercícios</span><span class="val">${exercisesDone(day)}${totalEx ? `<small style="font-size:13px">/${totalEx}</small>` : ''}</span></div>
+    <div class="stat peach"><span class="lbl">Fase estimada</span><span class="val sm">${info ? `${PHASES[info.phase].emoji} ${PHASES[info.phase].short}` : '—'}</span><span class="sub">${info ? `dia ${info.cycleDay} do ciclo` : ''}</span></div>
+    <div class="stat peach"><span class="lbl">Humor e energia</span><span class="val sm">${mood ? mood.emoji + ' ' + esc(mood.name) : '—'}</span><span class="sub">${energy ? 'Energia ' + esc(energy.name.toLowerCase()) : ''}</span></div>
   </div>
 
   ${foodDetail(day)}
   ${workoutDetail(day)}
   ${cycleDetail(day, info)}
+  ${booksDetail(date)}
 
   <div class="card">
     <label class="field"><span style="font-size:15px;color:var(--pink-strong)">Como foi meu dia? 💗</span>
@@ -106,6 +108,18 @@ function workoutDetail(day) {
         ${w.notes ? `<div class="notice mt-s">📝 ${esc(w.notes)}</div>` : ''}
       </div>`;
     }).join('<hr style="border:0;border-top:1px solid var(--line);margin:12px 0">')}
+  </div>`;
+}
+
+function booksDetail(date) {
+  const fin = [...state.books.values()].filter((b) => b.status === 'read' && b.endDate === date);
+  const st = [...state.books.values()].filter((b) => b.startDate === date);
+  if (!fin.length && !st.length) return '';
+  return `
+  <div class="card" data-action="go" data-tab="books" style="cursor:pointer">
+    <div class="card-head"><div class="ttl"><span class="emoji">📚</span><h3>Livros</h3></div></div>
+    ${fin.map((b) => `<div class="small">✅ Terminei <b>${esc(b.title)}</b>${b.author ? ' — ' + esc(b.author) : ''} ${b.rating ? stars(b.rating, 13) : ''}</div>`).join('')}
+    ${st.map((b) => `<div class="small mt-s">📖 Comecei <b>${esc(b.title)}</b>${b.author ? ' — ' + esc(b.author) : ''}</div>`).join('')}
   </div>`;
 }
 

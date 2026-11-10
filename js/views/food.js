@@ -294,7 +294,7 @@ function extraSheet(extraUid) {
 function menuSheet() {
   const list = menu();
   openSheet(`
-    <h2>✏️ Meu cardápio</h2>
+    <h2>Meu cardápio</h2>
     <p class="small muted" style="margin-top:-6px">Mudanças valem para os próximos registros. O histórico guarda o que foi registrado em cada dia.</p>
     ${list.map((m, mi) => `
       <div class="card" style="margin-top:12px">

@@ -10,6 +10,7 @@ export { clone };
 
 export const state = {
   days: new Map(),        // date -> registro do dia
+  books: new Map(),       // id -> livro
   settings: {},           // key -> value
   tab: 'home',
   date: todayKey(),       // data selecionada nas abas de registro
@@ -26,6 +27,7 @@ const SETTINGS_DEFAULTS = () => ({
   customSymptoms: [],
   lastBackup: null,
   backupReminder: true,
+  readingGoal: 12,
   installedAt: new Date().toISOString()
 });
 
@@ -71,8 +73,10 @@ export function migrateDay(d) {
 }
 
 export async function load() {
-  const [days, settingsRows] = await Promise.all([db.getAll('days'), db.getAll('settings')]);
+  const [days, settingsRows, books] = await Promise.all([db.getAll('days'), db.getAll('settings'), db.getAll('books')]);
   state.days.clear();
+  state.books.clear();
+  for (const b of books) if (b && b.id) state.books.set(b.id, b);
   for (const d of days) if (d && isValidKey(d.date)) state.days.set(d.date, migrateDay(d));
   const defaults = SETTINGS_DEFAULTS();
   const s = {};
@@ -134,6 +138,18 @@ export async function deleteDay(date) {
 export async function setSetting(key, value) {
   state.settings[key] = value;
   try { await db.put('settings', { key, value: clone(value) }); } catch (e) { listeners.forEach((f) => f(e)); throw e; }
+}
+
+export async function saveBook(book) {
+  book.updatedAt = new Date().toISOString();
+  if (!book.createdAt) book.createdAt = book.updatedAt;
+  state.books.set(book.id, book);
+  try { await db.put('books', clone(book)); } catch (e) { listeners.forEach((f) => f(e)); throw e; }
+}
+
+export async function removeBook(id) {
+  state.books.delete(id);
+  await db.del('books', id);
 }
 
 export function sortedDays() {

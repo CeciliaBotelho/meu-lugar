@@ -92,7 +92,7 @@ export function render() {
     </div>
   </div>
 
-  <div class="section-title"><h2>📝 ${isToday ? 'Hoje' : esc(fmtMedium(date))}</h2>${isToday ? '' : '<button class="link-btn" data-action="date-today">↩︎ hoje</button>'}</div>
+  <div class="section-title"><h2>${isToday ? 'Hoje' : esc(fmtMedium(date))}</h2>${isToday ? '' : '<button class="link-btn" data-action="date-today">↩︎ hoje</button>'}</div>
 
   <div class="card">
     <div class="card-head"><div class="ttl"><span class="emoji">🩸</span><h3>Sangramento</h3></div></div>
@@ -154,7 +154,7 @@ function historyCard(st) {
 
 function phasesEdu() {
   return `
-  <div class="section-title"><h2>🌸 Fases do ciclo</h2></div>
+  <div class="section-title"><h2>Fases do ciclo</h2></div>
   <div class="card soft">
     <details class="edu"><summary>🌷 Menstruação</summary><ul>
       <li>Estrogênio e progesterona geralmente estão baixos.</li>
@@ -237,7 +237,7 @@ export const actions = {
   'edit-period'(el) { periodSheet(el.dataset.start, el.dataset.end); },
   'cycle-defaults'() {
     const def = state.settings.cycleDefaults;
-    openSheet(`<h2>⚙️ Valores padrão do ciclo</h2>
+    openSheet(`<h2>Valores padrão do ciclo</h2>
       <p class="small muted">Usados apenas enquanto ainda não há ciclos completos registrados. Depois, o app usa a média dos seus registros.</p>
       <div class="row mt"><label class="field grow"><span>Duração do ciclo (dias)</span><input class="input" id="cl" type="number" inputmode="numeric" min="15" max="60" value="${def.cycleLength}"></label>
       <label class="field grow"><span>Duração da menstruação</span><input class="input" id="pl" type="number" inputmode="numeric" min="1" max="15" value="${def.periodLength}"></label></div>

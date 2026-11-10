@@ -1,6 +1,6 @@
 # Cantinho da Ce 🌸
 
-Aplicativo web pessoal (PWA) para acompanhar **alimentação, treinos, ciclo menstrual, sintomas, humor, energia, sono e diário**, feito para usar todos os dias no iPhone.
+Aplicativo web pessoal (PWA) para acompanhar **alimentação, treinos, ciclo menstrual, sintomas, humor, energia, sono, diário e livros lidos**, feito para usar todos os dias no iPhone.
 
 **Endereço:** https://ceciliabotelho.github.io/meu-lugar/
 
@@ -28,7 +28,7 @@ Toque na engrenagem ⚙️ (canto superior direito).
 2. Toque em **Gerar arquivo** → na folha de compartilhamento, escolha **Salvar em Arquivos** → **iCloud Drive** → **Salvar**.
 3. O app pergunta se o arquivo foi salvo. Confirme só se viu o arquivo salvo — assim ele registra a data do último backup.
 
-O arquivo `.json` inclui alimentação, extras, treinos, cargas, ciclo, sintomas, humor, energia, sono, diário e configurações, com data e versão do backup. O app mostra a data do último backup e lembra mensalmente.
+O arquivo `.json` inclui alimentação, extras, treinos, cargas, ciclo, sintomas, humor, energia, sono, diário, livros e configurações, com data e versão do backup. O app mostra a data do último backup e lembra mensalmente.
 
 **Restaurar backup 🌸**
 1. Toque em **Restaurar backup 🌸** e escolha o arquivo `.json` (em Arquivos/iCloud Drive).
@@ -46,6 +46,10 @@ O arquivo `.json` inclui alimentação, extras, treinos, cargas, ciclo, sintomas
 - Cada dia guarda uma **cópia do que foi registrado** (nomes, ingredientes, quantidades, calorias, séries, repetições e cargas). Editar o cardápio ou os treinos **não altera** dias anteriores.
 - Nada é apagado automaticamente. Atualizações do app não tocam nos dados (o banco tem migrações incrementais).
 - **Limite importante:** o Safari pode apagar dados de sites (falta de espaço, limpeza de dados do Safari, longos períodos sem uso quando aberto pelo navegador). Instalar na Tela de Início ajuda, mas **armazenamento local não garante conservação permanente** — faça backups regulares.
+
+## 📚 Meus livros
+
+No início, toque no card **Meus livros**. Registre livros lidos, em leitura e que quer ler, com nota de 0,5 a 5 estrelas, datas, páginas, formato, gênero, anotações e trecho favorito. Tem meta anual, resumo do ano e gráfico por mês.
 
 ## 🌙 Sobre o ciclo
 
@@ -84,7 +88,7 @@ js/cycle.js             cálculos do ciclo (estimativas)
 js/backup.js            backup JSON e criptografia por senha
 js/report.js            resumo do dia e exportação em texto
 js/charts.js            gráficos em SVG
-js/views/*.js           telas: início, alimentação, treinos, ciclo, histórico, ajustes
+js/views/*.js           telas: início, alimentação, treinos, ciclo, histórico, livros, ajustes
 ```
 
 ---

@@ -9,8 +9,9 @@ import * as workouts from './views/workouts.js';
 import * as cycle from './views/cycle.js';
 import * as history from './views/history.js';
 import * as settings from './views/settings.js';
+import * as books from './views/books.js';
 
-const views = { home, food, workouts, cycle, history, settings };
+const views = { home, food, workouts, cycle, history, settings, books };
 const viewEl = document.getElementById('view');
 
 function render({ scrollTop = false } = {}) {

@@ -6,10 +6,11 @@ import { isValidKey, todayKey } from './dates.js';
 
 export const BACKUP_FORMAT = 'cantinho-da-ce-backup';
 export const BACKUP_VERSION = 1;
-const APP_VERSION = '1.0.1';
+const APP_VERSION = '1.1.0';
 
 export function buildBackup() {
   const days = [...state.days.values()].map(clone).sort((a, b) => (a.date < b.date ? -1 : 1));
+  const books = [...state.books.values()].map(clone);
   const settings = Object.entries(state.settings).map(([key, value]) => ({ key, value: clone(value) }));
   return {
     format: BACKUP_FORMAT,
@@ -18,9 +19,9 @@ export function buildBackup() {
     appVersion: APP_VERSION,
     exportedAt: new Date().toISOString(),
     exportedLocalDate: todayKey(),
-    counts: { days: days.length },
-    contents: 'alimentação, extras, treinos, cargas, ciclo menstrual, sintomas, humor, energia, sono, diário e configurações',
-    data: { days, settings }
+    counts: { days: days.length, books: books.length },
+    contents: 'alimentação, extras, treinos, cargas, ciclo menstrual, sintomas, humor, energia, sono, diário, livros e configurações',
+    data: { days, settings, books }
   };
 }
 
@@ -92,10 +93,20 @@ export function validateBackup(obj) {
     if (!s || typeof s.key !== 'string') throw new Error('O backup contém configurações inválidas.');
     settings.push({ key: s.key, value: s.value });
   }
+  const books = [];
+  if (obj.data.books !== undefined) {
+    if (!Array.isArray(obj.data.books)) throw new Error('O backup contém livros em formato inválido.');
+    const ids = new Set();
+    for (const b of obj.data.books) {
+      if (!b || typeof b.id !== 'string' || typeof b.title !== 'string') throw new Error('O backup contém um livro inválido.');
+      if (ids.has(b.id)) continue; // evita duplicados
+      ids.add(b.id); books.push(b);
+    }
+  }
   const sorted = days.map((d) => d.date).sort();
-  return { days, settings, exportedAt: obj.exportedAt, first: sorted[0] || null, last: sorted[sorted.length - 1] || null };
+  return { days, settings, books, exportedAt: obj.exportedAt, first: sorted[0] || null, last: sorted[sorted.length - 1] || null };
 }
 
 export async function restore(valid) {
-  await db.replaceAll({ days: valid.days, settings: valid.settings });
+  await db.replaceAll({ days: valid.days, settings: valid.settings, books: valid.books });
 }

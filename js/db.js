@@ -2,7 +2,7 @@
 // Versões do banco: só adicionamos estruturas; nada é apagado em atualizações.
 
 const DB_NAME = 'cantinho-da-ce';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let dbPromise = null;
 
@@ -19,8 +19,9 @@ export function openDB() {
         db.createObjectStore('days', { keyPath: 'date' });   // um registro por data local
         db.createObjectStore('settings', { keyPath: 'key' }); // cardápio, treinos, preferências
       }
-      // Exemplo para o futuro:
-      // if (old < 2) { req.transaction.objectStore('days').createIndex('byMonth', 'month'); }
+      if (old < 2) {
+        db.createObjectStore('books', { keyPath: 'id' });     // livros (v1.1)
+      }
     };
     req.onsuccess = () => {
       const db = req.result;
@@ -67,20 +68,24 @@ export async function del(store, key) {
 /** Substitui todo o conteúdo de forma atômica (usado na restauração de backup). */
 export async function replaceAll(data) {
   const db = await openDB();
-  const tx = db.transaction(['days', 'settings'], 'readwrite');
+  const tx = db.transaction(['days', 'settings', 'books'], 'readwrite');
   const days = tx.objectStore('days');
   const settings = tx.objectStore('settings');
+  const books = tx.objectStore('books');
   days.clear();
   settings.clear();
+  books.clear();
   for (const d of data.days) days.put(d);
   for (const s of data.settings) settings.put(s);
+  for (const b of data.books || []) books.put(b);
   return done(tx);
 }
 
 export async function clearAll() {
   const db = await openDB();
-  const tx = db.transaction(['days', 'settings'], 'readwrite');
+  const tx = db.transaction(['days', 'settings', 'books'], 'readwrite');
   tx.objectStore('days').clear();
   tx.objectStore('settings').clear();
+  tx.objectStore('books').clear();
   return done(tx);
 }
