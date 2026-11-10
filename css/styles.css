@@ -66,8 +66,14 @@ p { margin: 0; }
   border-bottom: 1px solid rgba(246, 219, 230, 0.7);
 }
 .brand { background: none; border: 0; padding: 4px 0; display: flex; align-items: center; gap: 6px; }
-.brand-name { font-family: var(--font-title); font-size: 26px; font-weight: 700; color: var(--pink-strong); letter-spacing: .2px; }
-.brand-flower { font-size: 22px; }
+.brand-name {
+  font-family: var(--font); font-size: 23px; font-weight: 800; letter-spacing: -0.6px; line-height: 1;
+  color: var(--pink-strong);
+  background: linear-gradient(100deg, #f06a9f 0%, #d63a78 55%, #b48be8 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.brand-bow { font-size: 22px; display: inline-block; transform-origin: 50% 60%; animation: bowWiggle 3.2s ease-in-out 1s infinite; }
+@keyframes bowWiggle { 0%, 86%, 100% { transform: rotate(0); } 90% { transform: rotate(-12deg) scale(1.08); } 95% { transform: rotate(10deg) scale(1.08); } }
 .icon-btn {
   width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line);
   background: var(--card); box-shadow: var(--shadow); font-size: 18px; display: grid; place-items: center;

@@ -5,7 +5,7 @@ import { buildBackup, encryptBackup, decryptBackup, validateBackup, restore, bac
 import { clearAll } from '../db.js';
 import { fmtShort } from '../dates.js';
 
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.0.1';
 
 export function render() {
   const lb = state.settings.lastBackup;
