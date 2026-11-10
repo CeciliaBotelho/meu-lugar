@@ -669,3 +669,11 @@ body { background: var(--bg); }
 .ce-flower { width: 92px; height: 92px; font-size: 0; right: 16px; top: 22px; color: #dca1b2; }
 .ce-flower svg { width: 100%; height: 100%; display: block; }
 @media (max-width: 380px) { .ce-flower { width: 74px; height: 74px; right: 10px; } }
+
+/* setas e ícones desenhados (o iPhone troca ↗ e ☺ por emojis) */
+.ce-arrow { display: inline-flex; }
+.ce-arrow-svg { width: 17px; height: 17px; stroke-width: 1.5; }
+.ce-arrow-sm { width: 13px; height: 13px; display: inline-block; vertical-align: -2px; margin-left: 2px; }
+.ce-books-footer button { display: inline-flex; align-items: center; gap: 2px; }
+.ce-backup .ce-arrow { margin-left: auto; color: #a78d96; }
+.is-home .topbar { background: #fffdfb; -webkit-backdrop-filter: none; backdrop-filter: none; }

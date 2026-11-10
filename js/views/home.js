@@ -16,13 +16,15 @@ const ICO = {
   heart: '<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/>',
   flower: '<circle cx="12" cy="12" r="2.5"/><path d="M12 9.5C10 6 10.5 3 12 3s2 3 0 6.5M14.5 12c3.5-2 6.5-1.5 6.5 0s-3 2-6.5 0M12 14.5c2 3.5 1.5 6.5 0 6.5s-2-3 0-6.5M9.5 12C6 14 3 13.5 3 12s3-2 6.5 0"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
+  arrow: '<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
+  smile: '<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5c1.8 2 5.2 2 7 0"/><path d="M9 9.5h.01M15 9.5h.01"/>',
   cloud: '<path d="M17.5 19H8a5 5 0 1 1 .9-9.9A6 6 0 0 1 20 11.5a4 4 0 0 1-2.5 7.5Z"/>'
 };
 const ico = (k, cls = '') => `<svg class="ce-svg ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
 
 // Humores rápidos do cartão (os 7 continuam disponíveis em "Registrar meu dia")
 const QUICK = [
-  { id: 'feliz', g: '☺\uFE0E' },
+  { id: 'feliz', svg: 'smile' },
   { id: 'tranquila', svg: 'cloud' },
   { id: 'animada', g: '♡\uFE0E' },
   { id: 'sensivel', g: '☾\uFE0E' }
@@ -77,7 +79,7 @@ export function render() {
 
     ${needBackup ? `
     <button class="ce-backup" data-action="open-settings">
-      <span>${lastBackup ? 'Seu último backup foi em ' + esc(new Date(lastBackup).toLocaleDateString('pt-BR')) + '.' : 'Você ainda não fez nenhum backup.'} Que tal salvar uma cópia hoje?</span><span>↗</span>
+      <span>${lastBackup ? 'Seu último backup foi em ' + esc(new Date(lastBackup).toLocaleDateString('pt-BR')) + '.' : 'Você ainda não fez nenhum backup.'} Que tal salvar uma cópia hoje?</span><span class="ce-arrow">${ico('arrow', 'ce-arrow-svg')}</span>
     </button>` : ''}
 
     <div class="ce-feature">
@@ -96,15 +98,15 @@ export function render() {
     <div class="ce-section"><h2>Meus progressos de hoje</h2><span>♡</span></div>
     <button class="ce-shortcut" data-action="go" data-tab="food">
       <span class="ce-icon">${ico('food')}</span>
-      <div><h3>Nutrir o corpo</h3><p>${foodTxt}</p></div><span class="ce-arrow">↗</span>
+      <div><h3>Nutrir o corpo</h3><p>${foodTxt}</p></div><span class="ce-arrow">${ico('arrow', 'ce-arrow-svg')}</span>
     </button>
     <button class="ce-shortcut" data-action="go" data-tab="workouts">
       <span class="ce-icon">${ico('workout')}</span>
-      <div><h3>Encontrar seu movimento</h3><p>${workTxt}</p></div><span class="ce-arrow">↗</span>
+      <div><h3>Encontrar seu movimento</h3><p>${workTxt}</p></div><span class="ce-arrow">${ico('arrow', 'ce-arrow-svg')}</span>
     </button>
     <button class="ce-shortcut" data-action="go" data-tab="cycle">
       <span class="ce-icon">${ico('moon')}</span>
-      <div><h3>Ouvir seu corpo</h3><p>${cycleTxt}</p></div><span class="ce-arrow">↗</span>
+      <div><h3>Ouvir seu corpo</h3><p>${cycleTxt}</p></div><span class="ce-arrow">${ico('arrow', 'ce-arrow-svg')}</span>
     </button>
 
     <div class="ce-section"><h2>Minha estante</h2><span>♡</span></div>
@@ -136,7 +138,7 @@ function shelf() {
   <div class="ce-books">
     <div class="ce-books-heading"><span class="ce-icon">${ico('book')}</span><div><h3>Meus livros</h3><p>${read.length ? 'As histórias que já fizeram parte de mim.' : 'As histórias que forem fazendo parte de você aparecem aqui.'}</p></div></div>
     <div class="ce-book-row">${row}</div>
-    <div class="ce-books-footer"><span>${nYear ? `${nYear} livro${nYear > 1 ? 's' : ''} lido${nYear > 1 ? 's' : ''} em ${y}` : read.length ? `Nenhum livro terminado em ${y} ainda` : 'Nenhum livro registrado ainda'}</span><button data-action="go" data-tab="books">Minha coleção ↗</button></div>
+    <div class="ce-books-footer"><span>${nYear ? `${nYear} livro${nYear > 1 ? 's' : ''} lido${nYear > 1 ? 's' : ''} em ${y}` : read.length ? `Nenhum livro terminado em ${y} ainda` : 'Nenhum livro registrado ainda'}</span><button data-action="go" data-tab="books">Minha coleção ${ico('arrow', 'ce-arrow-svg ce-arrow-sm')}</button></div>
   </div>`;
 }
 

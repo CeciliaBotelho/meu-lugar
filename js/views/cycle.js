@@ -92,7 +92,7 @@ export function render() {
     </div>
   </div>
 
-  <div class="section-title"><h2>${isToday ? 'Hoje' : esc(fmtMedium(date))}</h2>${isToday ? '' : '<button class="link-btn" data-action="date-today">↩︎ hoje</button>'}</div>
+  <div class="section-title"><h2>${isToday ? 'Hoje' : esc(fmtMedium(date))}</h2>${isToday ? '' : '<button class="link-btn" data-action="date-today">← hoje</button>'}</div>
 
   <div class="card">
     <div class="card-head"><div class="ttl"><span class="emoji">🩸</span><h3>Sangramento</h3></div></div>

@@ -34,7 +34,7 @@ export function dateBar(date = state.date) {
     </div>
     <button class="arrow" data-action="${isToday ? 'noop' : 'date-shift'}" data-n="1" aria-label="Próximo dia" ${isToday ? 'style="opacity:.35"' : ''}>›</button>
   </div>
-  ${isToday ? '' : `<div class="center" style="margin:-6px 0 12px"><button class="link-btn" data-action="date-today">↩︎ Voltar para hoje</button></div>`}`;
+  ${isToday ? '' : `<div class="center" style="margin:-6px 0 12px"><button class="link-btn" data-action="date-today">← Voltar para hoje</button></div>`}`;
 }
 
 export const globalActions = {
