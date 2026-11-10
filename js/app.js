@@ -1,6 +1,6 @@
 // Cantinho da Ce 🌸 — ponto de entrada
 import { state, load, onSaveError } from './store.js';
-import { todayKey } from './dates.js';
+import { todayKey, fmtLong } from './dates.js';
 import { toast, debounce } from './ui.js';
 import { setRenderer, globalActions, globalChange, go } from './router.js';
 import * as home from './views/home.js';
@@ -23,6 +23,9 @@ function render({ scrollTop = false } = {}) {
     console.error(e);
     viewEl.innerHTML = `<div class="card"><b>Ops, algo deu errado ao mostrar esta tela.</b><p class="small muted mt-s">Seus dados continuam salvos. Tente outra aba ou recarregue o app.</p><pre class="tiny faint" style="white-space:pre-wrap">${String(e && e.message || e).replace(/</g, '&lt;')}</pre></div>`;
   }
+  const isHome = (views[state.tab] || home) === home;
+  document.getElementById('app').classList.toggle('is-home', isHome);
+  if (isHome) document.querySelector('.top-date').textContent = fmtLong(todayKey()).replace(/ de \d{4}$/, '').toUpperCase();
   document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('active', t.dataset.tab === state.tab));
   if (scrollTop) window.scrollTo(0, 0); else window.scrollTo(0, y);
 }

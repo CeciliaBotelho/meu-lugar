@@ -3,9 +3,30 @@ import { todayKey, fmtLong, diffDays, fmtMedium } from '../dates.js';
 import { esc, openSheet, registerToast, hearts, num, fmtNum, debounce } from '../ui.js';
 import { go, rerender } from '../router.js';
 import { stats, infoFor, PHASES } from '../cycle.js';
-import { dayKcal, mealsRegistered, plannedMeals, workoutEntries, exercisesDone, findMood, findEnergy, intensityName } from '../report.js';
+import { dayKcal, mealsRegistered, plannedMeals, workoutEntries, workoutProgress, findMood, findEnergy, intensityName } from '../report.js';
 import { MOODS, ENERGY, SLEEP_QUALITY } from '../defaults.js';
 import { readInYear } from './books.js';
+
+// Ícones de traço (estilo delicado, desenhados à mão — sem bibliotecas externas)
+const ICO = {
+  food: '<path d="M4 3v7a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V3"/><path d="M7 3v18"/><path d="M20 15V3a5 5 0 0 0-4 5v5a2 2 0 0 0 2 2h2Zm0 0v6"/>',
+  workout: '<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>',
+  moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  book: '<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2Z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7Z"/>',
+  heart: '<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/>',
+  flower: '<circle cx="12" cy="12" r="2.5"/><path d="M12 9.5C10 6 10.5 3 12 3s2 3 0 6.5M14.5 12c3.5-2 6.5-1.5 6.5 0s-3 2-6.5 0M12 14.5c2 3.5 1.5 6.5 0 6.5s-2-3 0-6.5M9.5 12C6 14 3 13.5 3 12s3-2 6.5 0"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  cloud: '<path d="M17.5 19H8a5 5 0 1 1 .9-9.9A6 6 0 0 1 20 11.5a4 4 0 0 1-2.5 7.5Z"/>'
+};
+const ico = (k, cls = '') => `<svg class="ce-svg ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
+
+// Humores rápidos do cartão (os 7 continuam disponíveis em "Registrar meu dia")
+const QUICK = [
+  { id: 'feliz', g: '☺\uFE0E' },
+  { id: 'tranquila', svg: 'cloud' },
+  { id: 'animada', g: '♡\uFE0E' },
+  { id: 'sensivel', g: '☾\uFE0E' }
+];
 
 export function render() {
   const today = todayKey();
@@ -16,85 +37,106 @@ export function render() {
   const meals = mealsRegistered(day);
   const planned = plannedMeals().length;
   const ws = workoutEntries(day);
-  const exDone = exercisesDone(day);
   const mood = findMood(day.mood);
   const energy = findEnergy(day.energy);
   const lastBackup = state.settings.lastBackup;
   const needBackup = state.settings.backupReminder !== false && state.days.size > 0 && (!lastBackup || diffDays(lastBackup.slice(0, 10), today) >= 30);
 
-  const wsText = day.rest ? 'Descanso 😴' : ws.length ? ws.map((w) => `${esc(w.name)} ${esc(w.emoji || '')}`).join(' + ') : '—';
-  const totalEx = ws.reduce((s, w) => s + w.exercises.length, 0);
+  // Alimentação
+  const extras = (day.extras || []).length;
+  const foodTxt = meals || extras
+    ? `${meals} de ${planned} refeições registradas${extras ? ` + ${extras} extra${extras > 1 ? 's' : ''}` : ''} · ${kcal} kcal`
+    : 'Nenhuma refeição registrada ainda';
 
-  let cycleCard;
+  // Treino
+  let workTxt;
+  if (ws.length) {
+    workTxt = ws.map((w) => { const p = workoutProgress(w); return `${esc(w.name)} · ${p.done} de ${p.total} exercícios concluídos`; }).join(' · ');
+  } else if (day.rest) workTxt = 'Dia de descanso registrado';
+  else workTxt = 'Nenhum treino registrado hoje';
+
+  // Ciclo + bem-estar
+  const parts = [];
   if (info) {
-    const ph = PHASES[info.phase];
-    const nextTxt = info.beyond
-      ? `Estimativa era ${fmtMedium(info.nextStart)} — registre quando vier 💗`
-      : `Próxima menstruação estimada: <b>${fmtMedium(info.nextStart)}</b>`;
-    cycleCard = `
-      <div class="card ${info.phase === 'ovu' ? 'lilac' : info.phase === 'lut' ? 'peach' : 'pink'}" data-action="go" data-tab="cycle" style="cursor:pointer">
-        <div class="card-head"><div class="ttl"><span class="emoji">🌙</span><h3>Meu ciclo hoje</h3></div><span class="badge gray">estimativa</span></div>
-        <div class="row" style="gap:14px">
-          <div class="phase-ring" style="--p:${Math.min(100, info.cycleDay / info.cycleLength * 100).toFixed(0)}%"><div><b>${info.cycleDay}</b><small>dia do ciclo</small></div></div>
-          <div class="grow">
-            <div style="font-weight:800;font-size:16px">${ph.emoji} ${ph.name}</div>
-            <div class="small muted mt-s">${nextTxt}</div>
-            ${(day.symptoms || []).length ? `<div class="small mt-s">Sintomas: ${day.symptoms.map((s) => esc(s.name) + ' <span class="faint">(' + intensityName(s.intensity) + ')</span>').join(', ')}</div>` : '<div class="small faint mt-s">Nenhum sintoma registrado hoje.</div>'}
-          </div>
-        </div>
-      </div>`;
-  } else {
-    cycleCard = `
-      <div class="card pink" data-action="go" data-tab="cycle" style="cursor:pointer">
-        <div class="card-head"><div class="ttl"><span class="emoji">🌙</span><h3>Meu ciclo</h3></div></div>
-        <p class="small muted">Registre o primeiro dia da sua última menstruação para ver o dia e a fase estimados do ciclo. 🌷</p>
-      </div>`;
+    parts.push(`Dia ${info.cycleDay} do ciclo · ${esc(PHASES[info.phase].name)} (estimativa)`);
+    if (!info.beyond) parts.push(`próxima menstruação ≈ ${esc(fmtMedium(info.nextStart))}`);
   }
+  const reg = [];
+  if (mood) reg.push(`humor ${esc(mood.name.toLowerCase())}`);
+  if (energy) reg.push(`energia ${esc(energy.name.toLowerCase())}`);
+  if ((day.symptoms || []).length) reg.push(day.symptoms.map((s) => `${esc(s.name.toLowerCase())} (${intensityName(s.intensity)})`).join(', '));
+  const cycleTxt = [parts.join(' · '), reg.length ? 'Hoje: ' + reg.join(' · ') : (info ? 'Nada registrado hoje' : 'Registre sua menstruação para ver as estimativas')].filter(Boolean).join('<br>');
+
+  const quickChosen = QUICK.some((q) => q.id === day.mood);
+  const otherMood = mood && !quickChosen ? mood : null;
 
   return `
-  <section class="hello">
-    <h1>Oi, Cecilia! 💗 Vamos cuidar de você hoje?</h1>
-    <p>${esc(fmtLong(today))}</p>
-  </section>
+  <div class="ce-home">
+    <h1 class="ce-h1">Bem-vinda,<br>Cecilia<span> ♡</span></h1>
+    <p class="ce-intro">Hoje também é dia de cuidar de você.</p>
 
-  ${needBackup ? `
-  <div class="banner">
-    <span style="font-size:24px">☁️</span>
-    <div class="grow"><b>Hora do backup mensal 💗</b><span class="small muted">${lastBackup ? 'Último backup: ' + esc(new Date(lastBackup).toLocaleDateString('pt-BR')) : 'Você ainda não fez nenhum backup.'}</span></div>
-    <button class="btn small" data-action="open-settings">Salvar</button>
-  </div>` : ''}
+    ${needBackup ? `
+    <button class="ce-backup" data-action="open-settings">
+      <span>${lastBackup ? 'Seu último backup foi em ' + esc(new Date(lastBackup).toLocaleDateString('pt-BR')) + '.' : 'Você ainda não fez nenhum backup.'} Que tal salvar uma cópia hoje?</span><span>↗</span>
+    </button>` : ''}
 
-  <div class="grid2">
-    <div class="stat" data-action="go" data-tab="food"><span class="lbl">Calorias registradas</span><span class="val">${kcal}<small style="font-size:13px"> kcal</small></span><span class="sub">referência ${state.settings.kcalReference} kcal</span></div>
-    <div class="stat" data-action="go" data-tab="food"><span class="lbl">Refeições</span><span class="val">${meals}<small style="font-size:13px">/${planned}</small></span><span class="sub">${meals ? 'registradas hoje' : 'nenhuma ainda'}</span></div>
-    <div class="stat lilac" data-action="go" data-tab="workouts"><span class="lbl">Treino do dia</span><span class="val sm">${wsText}</span></div>
-    <div class="stat lilac" data-action="go" data-tab="workouts"><span class="lbl">Exercícios concluídos</span><span class="val">${exDone}${totalEx ? `<small style="font-size:13px">/${totalEx}</small>` : ''}</span></div>
-    <div class="stat peach wide" data-action="open-checkin">
-      <span class="lbl">Humor e energia</span>
-      ${mood || energy ? `<span class="val sm">${mood ? `${mood.emoji} ${esc(mood.name)}` : ''}${mood && energy ? ' · ' : ''}${energy ? `${energy.emoji} Energia ${esc(energy.name.toLowerCase())}` : ''}</span>` : '<span class="sub">Ainda não registrados hoje — toque para registrar.</span>'}
+    <div class="ce-feature">
+      <div>
+        <span class="ce-eyebrow">SEU MOMENTO</span>
+        <h2>Como você<br>está se sentindo?</h2>
+        <p>${mood ? `Hoje você está <b>${esc(mood.name.toLowerCase())}</b>${energy ? ` · energia ${esc(energy.name.toLowerCase())}` : ''}.` : 'Um pouquinho de atenção para você.'}</p>
+      </div>
+      <div class="ce-flower" aria-hidden="true">✳</div>
+      <div class="ce-moods" role="group" aria-label="Humor de hoje">
+        ${QUICK.map((q) => { const m = findMood(q.id); return `<button class="${day.mood === q.id ? 'chosen' : ''}" data-action="quick-mood" data-mood="${q.id}" aria-label="${esc(m.name)}" aria-pressed="${day.mood === q.id}"><span>${q.svg ? ico(q.svg, 'ce-mood-svg') : q.g}</span><small>${esc(m.name)}</small></button>`; }).join('')}
+        <button class="${otherMood ? 'chosen' : ''}" data-action="open-checkin" aria-label="Outros humores"><span>${otherMood ? otherMood.emoji : '…'}</span><small>${otherMood ? esc(otherMood.name) : 'Outro'}</small></button>
+      </div>
     </div>
+
+    <div class="ce-section"><h2>Meus progressos de hoje</h2><span>♡</span></div>
+    <button class="ce-shortcut" data-action="go" data-tab="food">
+      <span class="ce-icon">${ico('food')}</span>
+      <div><h3>Nutrir o corpo</h3><p>${foodTxt}</p></div><span class="ce-arrow">↗</span>
+    </button>
+    <button class="ce-shortcut" data-action="go" data-tab="workouts">
+      <span class="ce-icon">${ico('workout')}</span>
+      <div><h3>Encontrar seu movimento</h3><p>${workTxt}</p></div><span class="ce-arrow">↗</span>
+    </button>
+    <button class="ce-shortcut" data-action="go" data-tab="cycle">
+      <span class="ce-icon">${ico('moon')}</span>
+      <div><h3>Ouvir seu corpo</h3><p>${cycleTxt}</p></div><span class="ce-arrow">↗</span>
+    </button>
+
+    <div class="ce-section"><h2>Minha estante</h2><span>♡</span></div>
+    ${shelf()}
+
+    <p class="ce-note">você não precisa dar conta de tudo hoje.</p>
   </div>
-
-  ${cycleCard}
-
-  ${booksCard()}
-
-  <button class="btn block big" data-action="open-checkin">Registrar meu dia</button>
-
-  <p class="tiny faint center mt">🔒 Seus registros ficam salvos somente neste aparelho.</p>
+  <div class="ce-register-wrap"><button class="ce-register" data-action="open-checkin">Registrar meu dia</button></div>
   `;
 }
 
-function booksCard() {
+const SPINES = [
+  { bg: '#dfb7c2', edge: '#c797a6', ink: '#69424e', icon: 'heart' },
+  { bg: '#d8dcc6', edge: '#b6bca0', ink: '#596047', icon: 'flower' },
+  { bg: '#e5d4bf', edge: '#cbb394', ink: '#7a624b', icon: 'moon' }
+];
+
+function shelf() {
   const y = Number(todayKey().slice(0, 4));
-  const n = readInYear(y).length;
-  const goal = Number(state.settings.readingGoal) || 0;
-  const reading = [...state.books.values()].filter((b) => b.status === 'reading');
+  const read = [...state.books.values()].filter((b) => b.status === 'read').sort((a, b) => ((a.endDate || '') < (b.endDate || '') ? 1 : -1));
+  const nYear = readInYear(y).length;
+  const covers = read.slice(0, 3);
+  const row = covers.length
+    ? covers.map((b, i) => { const s = SPINES[i % 3]; return `<button class="ce-book" data-action="bk-edit" data-id="${esc(b.id)}" style="--cv:${s.bg};--edge:${s.edge};--ink:${s.ink}" aria-label="${esc(b.title)}">${ico(s.icon)}<span>${esc(b.title)}</span></button>`; }).join('')
+      + Array.from({ length: 3 - covers.length }, () => `<button class="ce-book ce-book-empty" data-action="bk-add" aria-label="Adicionar livro">${ico('plus')}<span>adicionar</span></button>`).join('')
+    : `<button class="ce-book ce-book-empty" data-action="bk-add" aria-label="Adicionar livro">${ico('plus')}<span>seu primeiro<br>livro</span></button>`
+      + '<div class="ce-book ce-book-ghost" aria-hidden="true"></div><div class="ce-book ce-book-ghost" aria-hidden="true"></div>';
   return `
-  <div class="card lilac" data-action="go" data-tab="books" style="cursor:pointer">
-    <div class="card-head"><div class="ttl"><span class="emoji">📚</span><h3>Meus livros</h3></div><span class="badge lilac">${n}${goal ? '/' + goal : ''} em ${y}</span></div>
-    ${goal ? `<div class="progress lilac"><span style="width:${Math.min(100, n / goal * 100)}%"></span></div>` : ''}
-    <p class="small muted mt-s">${reading.length ? `📖 Lendo agora: <b>${reading.slice(0, 2).map((b) => esc(b.title)).join(', ')}</b>` : n ? 'Toque para ver seus livros e notas. 💜' : 'Registre os livros que você leu este ano, com nota e anotações. 💜'}</p>
+  <div class="ce-books">
+    <div class="ce-books-heading"><span class="ce-icon">${ico('book')}</span><div><h3>Meus livros</h3><p>${read.length ? 'As histórias que já fizeram parte de mim.' : 'As histórias que forem fazendo parte de você aparecem aqui.'}</p></div></div>
+    <div class="ce-book-row">${row}</div>
+    <div class="ce-books-footer"><span>${nYear ? `${nYear} livro${nYear > 1 ? 's' : ''} lido${nYear > 1 ? 's' : ''} em ${y}` : read.length ? `Nenhum livro terminado em ${y} ainda` : 'Nenhum livro registrado ainda'}</span><button data-action="go" data-tab="books">Minha coleção ↗</button></div>
   </div>`;
 }
 
@@ -148,5 +190,13 @@ export function openCheckin(date = todayKey()) {
   });
 }
 
-export const actions = {};
+export const actions = {
+  async 'quick-mood'(el) {
+    const id = el.dataset.mood;
+    const cur = peekDay(todayKey()).mood;
+    await updateDay(todayKey(), (d) => { d.mood = cur === id ? null : id; });
+    rerender();
+    if (cur !== id) registerToast();
+  }
+};
 export { fmtNum };

@@ -565,3 +565,102 @@ details.edu:first-child { border-top: 0; }
 }
 .brand-da { font-weight: 400; color: var(--ink); }
 .brand-bow { font-size: 17px; transform: translateY(-2px); }
+
+/* =====================================================================
+   Tela inicial — estilo "diário delicado" (v1.2)
+   ===================================================================== */
+:root { --bg: #fffdfb; --ce-pink: #e63d80; --ce-ink: #44343b; --ce-serif: Georgia, "Times New Roman", serif; --ce-sans: "Helvetica Neue", Arial, sans-serif; }
+body { background: var(--bg); }
+.topbar { background: rgba(255, 253, 251, 0.9); }
+
+/* topo da tela inicial: só a data + botão discreto de ajustes */
+.top-date { display: none; font-family: var(--ce-sans); font-size: 10.5px; letter-spacing: 1.8px; color: #8e737c; font-weight: 600; }
+.is-home .brand { display: none; }
+.is-home .top-date { display: block; }
+.is-home .topbar { padding-top: calc(var(--sat) + 18px); padding-bottom: 10px; padding-left: calc(25px + var(--sal)); padding-right: calc(19px + var(--sar)); }
+.is-home .icon-btn { color: #a78d96; }
+.is-home .view { padding-left: calc(25px + var(--sal)); padding-right: calc(25px + var(--sar)); padding-bottom: calc(var(--tabbar-h) + var(--sab) + 100px); }
+
+.ce-home { color: var(--ce-ink); font-family: var(--ce-sans); }
+.ce-svg { width: 21px; height: 21px; display: block; }
+.ce-h1 { font-family: var(--ce-serif); font-weight: 400; font-size: 41px; line-height: 1.08; letter-spacing: -1.8px; margin: 12px 0 14px; color: var(--ce-ink); }
+.ce-h1 span { color: var(--ce-pink); }
+.ce-intro { font-size: 13px; color: #856f76; margin: 0 0 24px; line-height: 1.6; }
+
+.ce-backup { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; background: transparent; border: 1px dashed #e4ccd4; border-radius: 14px; padding: 11px 14px; margin: -8px 0 18px; font-size: 12px; color: #8d6e7a; font-family: var(--ce-sans); }
+.ce-backup span:last-child { margin-left: auto; color: #a78d96; }
+
+.ce-feature { position: relative; background: #f7e8eb; border-radius: 18px; padding: 23px; overflow: hidden; }
+.ce-eyebrow { font-size: 9.5px; letter-spacing: 1.9px; color: #986174; font-weight: 600; }
+.ce-feature h2 { font-family: var(--ce-serif); font-size: 23px; line-height: 1.2; font-weight: 400; margin: 9px 0; color: var(--ce-ink); position: relative; }
+.ce-feature p { font-size: 11.5px; color: #8d6e7a; margin: 0 0 18px; line-height: 1.5; position: relative; }
+.ce-feature p b { color: #a2456b; font-weight: 600; }
+.ce-flower { position: absolute; right: 13px; top: 24px; font-family: var(--ce-serif); font-size: 110px; line-height: 1; color: #dca1b2; transform: rotate(12deg); pointer-events: none; }
+.ce-moods { display: flex; gap: 8px; position: relative; }
+.ce-moods button {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  height: 58px; background: #fff9f9; border: 1px solid #e4ccd4; border-radius: 13px; color: #ac657f; padding: 4px 2px;
+  transition: background .2s, color .2s, transform .12s;
+}
+.ce-moods button span { font-family: var(--ce-serif); font-size: 24px; line-height: 1; }
+.ce-moods button small { font-family: var(--ce-sans); font-size: 9px; letter-spacing: .1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.ce-moods button:active { transform: scale(.96); }
+.ce-moods button.chosen { background: var(--ce-pink); color: #fff; border-color: var(--ce-pink); }
+
+.ce-section { display: flex; align-items: center; justify-content: space-between; margin: 28px 0 8px; }
+.ce-section h2 { font-family: var(--ce-serif); font-size: 20px; font-weight: 400; margin: 0; color: var(--ce-ink); letter-spacing: -.2px; }
+.ce-section > span { color: #bc788f; }
+
+.ce-shortcut { display: flex; align-items: center; gap: 13px; width: 100%; text-align: left; padding: 15px 0; border: 0; border-bottom: 1px solid #eadfe1; background: transparent; color: inherit; font-family: var(--ce-sans); }
+.ce-icon { width: 39px; height: 39px; background: #f4ecea; display: grid; place-items: center; border-radius: 13px; color: #a16d7d; flex-shrink: 0; }
+.ce-shortcut h3, .ce-books h3 { font-family: var(--ce-sans); font-size: 13px; font-weight: 500; margin: 0 0 4px; color: var(--ce-ink); letter-spacing: 0; }
+.ce-shortcut p { font-size: 11.5px; color: #8e7d82; margin: 0; line-height: 1.45; }
+.ce-shortcut > div { min-width: 0; }
+.ce-arrow { margin-left: auto; color: #a78d96; padding-left: 6px; }
+
+.ce-books { background: #f5eeea; border-radius: 17px; padding: 18px; margin-top: 4px; }
+.ce-books-heading { display: flex; align-items: center; gap: 12px; }
+.ce-books-heading p { font-size: 11.5px; color: #8e737c; margin: 0; line-height: 1.4; }
+.ce-book-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 20px 0 17px; }
+.ce-book {
+  min-height: 117px; background: var(--cv, #dfb7c2); border: 0; border-left: 4px solid var(--edge, #c797a6); border-radius: 2px 7px 7px 2px;
+  box-shadow: 3px 4px 0 #e7dcd7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  color: var(--ink, #69424e); text-align: center; padding: 10px 6px; min-width: 0;
+}
+.ce-book span { font-family: var(--ce-serif); font-size: 12px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+.ce-book-empty { background: transparent; border: 1.5px dashed #d9bfc8; border-left: 1.5px dashed #d9bfc8; box-shadow: none; color: #b0899a; }
+.ce-book-ghost { background: transparent; border: 1.5px dashed #e7d9de; border-left: 1.5px dashed #e7d9de; box-shadow: none; opacity: .6; }
+.ce-books-footer { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 11px; color: #8e737c; }
+.ce-books-footer button { background: none; border: 0; padding: 4px 0; font: inherit; color: #8e737c; white-space: nowrap; }
+
+.ce-note { text-align: center; font-size: 13.5px; font-family: var(--ce-serif); font-style: italic; color: #9d7b88; padding: 26px 0 6px; margin: 0; }
+
+/* botão "Registrar meu dia" fixo acima da navegação, como no modelo */
+.ce-register-wrap {
+  position: fixed; left: 0; right: 0; z-index: 25; max-width: 640px; margin: 0 auto;
+  bottom: calc(var(--tabbar-h) + var(--sab) + 4px);
+  padding: 14px calc(15px + var(--sar)) 8px calc(15px + var(--sal));
+  background: linear-gradient(to bottom, rgba(255, 253, 251, 0), #fffdfb 38%);
+}
+.ce-register { width: 100%; padding: 16px; background: var(--ce-pink); color: #fff; border: 0; border-radius: 15px; font-family: var(--ce-sans); font-size: 15px; font-weight: 600; }
+.ce-register:active { transform: scale(.985); }
+
+/* navegação inferior no estilo do modelo (todas as telas) */
+.tabbar { background: #fffdfe; border-top: 1px solid #eee4e7; padding-top: 9px; padding-bottom: calc(10px + var(--sab)); }
+.tab { color: #aea1a8; gap: 6px; }
+.tab-svg { width: 23px; height: 23px; stroke-width: 1.9; }
+.tab.active { color: var(--ce-pink); }
+.tab.active .tab-svg { stroke-width: 1.9; }
+.tab-lbl { font-family: var(--ce-sans); font-size: 9.5px; font-weight: 600; }
+@media (min-width: 420px) { .tab-lbl { font-size: 10px; } }
+
+@media (max-width: 380px) {
+  .is-home .view { padding-left: calc(18px + var(--sal)); padding-right: calc(18px + var(--sar)); }
+  .ce-h1 { font-size: 36px; }
+  .ce-flower { font-size: 87px; right: 8px; }
+}
+.ce-mood-svg { width: 24px; height: 24px; margin: 0 auto; }
+/* menos espaço entre a data e o título */
+.is-home .topbar { padding-bottom: 4px; }
+.is-home .view { padding-top: 2px; }
+.ce-h1 { margin-top: 4px; }
