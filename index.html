@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cantinho da Ce</title>
+  <meta name="description" content="Cantinho da Ce — alimentação, treinos, ciclo e diário, salvos só no seu aparelho.">
+  <meta name="theme-color" content="#fde4ee">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Cantinho da Ce">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" href="./icons/favicon-64.png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="topbar">
+      <button class="brand" data-action="go" data-tab="home" aria-label="Ir para o início">
+        <span class="brand-name">Cantinho da Ce</span><span class="brand-flower">🌸</span>
+      </button>
+      <button class="icon-btn" data-action="open-settings" aria-label="Ajustes e backup">⚙️</button>
+    </header>
+
+    <main id="view" class="view" tabindex="-1">
+      <div class="loading">Carregando seu cantinho… 🌸</div>
+    </main>
+
+    <nav class="tabbar" aria-label="Navegação principal">
+      <button class="tab" data-action="go" data-tab="home"><span class="tab-ico">🏡</span><span class="tab-lbl">Início</span></button>
+      <button class="tab" data-action="go" data-tab="food"><span class="tab-ico">🥤</span><span class="tab-lbl">Alimentação</span></button>
+      <button class="tab" data-action="go" data-tab="workouts"><span class="tab-ico">💪</span><span class="tab-lbl">Treinos</span></button>
+      <button class="tab" data-action="go" data-tab="cycle"><span class="tab-ico">🌙</span><span class="tab-lbl">Meu Ciclo</span></button>
+      <button class="tab" data-action="go" data-tab="history"><span class="tab-ico">🌷</span><span class="tab-lbl">Histórico</span></button>
+    </nav>
+  </div>
+
+  <div id="modal-root"></div>
+  <div id="toast-root" aria-live="polite"></div>
+  <div id="fx-root" aria-hidden="true"></div>
+  <div id="print-root"></div>
+
+  <noscript>O Cantinho da Ce precisa de JavaScript ativado. 💗</noscript>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

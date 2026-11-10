@@ -1,0 +1,5 @@
+# Nunca publicar registros pessoais
+cantinho-da-ce-backup*.json
+cantinho-da-ce-diario*.txt
+*.zip
+.DS_Store
