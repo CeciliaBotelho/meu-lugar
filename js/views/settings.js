@@ -5,17 +5,16 @@ import { buildBackup, encryptBackup, decryptBackup, validateBackup, restore, bac
 import { clearAll } from '../db.js';
 import { fmtShort } from '../dates.js';
 
-export const APP_VERSION = '1.2.2';
+export const APP_VERSION = '1.3.0';
 
 export function render() {
   const lb = state.settings.lastBackup;
   const st = state.ui.storage || {};
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   return `
-  <div class="section-title" style="margin-top:4px"><h2>Ajustes e backup</h2><button class="link-btn" data-action="go" data-tab="home">Fechar</button></div>
 
   <div class="card pink">
-    <div class="card-head"><div class="ttl"><span class="emoji">☁️</span><h3>Backup</h3></div></div>
+    <div class="card-head"><div class="ttl"><h3>Backup</h3></div></div>
     <p class="small">${lb ? `Último backup confirmado: <b>${esc(new Date(lb).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }))}</b>` : 'Você ainda não confirmou nenhum backup.'}</p>
     <p class="tiny muted mt-s">${state.days.size} dia(s) com registros e ${state.books.size} livro(s) neste aparelho.</p>
     <div class="btn-row mt">
@@ -28,19 +27,19 @@ export function render() {
   </div>
 
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">💾</span><h3>Armazenamento no aparelho</h3></div></div>
+    <div class="card-head"><div class="ttl"><h3>Armazenamento no aparelho</h3></div></div>
     <p class="small">Seus registros ficam no <b>IndexedDB</b> deste navegador/app, salvos a cada alteração.</p>
     <dl class="kv mt">
-      <dt>Armazenamento persistente</dt><dd>${st.persisted === true ? 'Concedido ✅' : st.persisted === false ? 'Não concedido' : 'Verificando…'}</dd>
+      <dt>Armazenamento persistente</dt><dd>${st.persisted === true ? 'Concedido' : st.persisted === false ? 'Não concedido' : 'Verificando…'}</dd>
       ${st.usage != null ? `<dt>Espaço usado</dt><dd>${(st.usage / 1024 / 1024).toFixed(2).replace('.', ',')} MB</dd>` : ''}
-      <dt>Aberto como app</dt><dd>${standalone ? 'Sim (Tela de Início) ✅' : 'Não — abra pela Tela de Início'}</dd>
+      <dt>Aberto como app</dt><dd>${standalone ? 'Sim (Tela de Início)' : 'Não — abra pela Tela de Início'}</dd>
     </dl>
     ${st.persisted === false ? '<button class="btn soft small mt" data-action="persist">Pedir armazenamento persistente</button>' : ''}
-    <div class="notice peach mt">⚠️ <b>Importante:</b> o Safari pode apagar dados locais de sites (por exemplo, se faltar espaço, se você limpar os dados do Safari, ou após um período sem uso quando o site é aberto só pelo navegador). Instalar na Tela de Início ajuda, mas armazenamento local <b>não garante conservação permanente</b>. Por isso, faça backups regulares. 💗</div>
+    <div class="notice peach mt"><b>Importante:</b> o Safari pode apagar dados locais de sites (por exemplo, se faltar espaço, se você limpar os dados do Safari, ou após um período sem uso quando o site é aberto só pelo navegador). Instalar na Tela de Início ajuda, mas armazenamento local <b>não garante conservação permanente</b>. Por isso, faça backups regulares.</div>
   </div>
 
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">📱</span><h3>Instalar no iPhone</h3></div></div>
+    <div class="card-head"><div class="ttl"><h3>Instalar no iPhone</h3></div></div>
     <ol class="small" style="margin:0;padding-left:20px;line-height:1.7">
       <li>Abra este endereço no <b>Safari</b>.</li>
       <li>Toque em <b>Compartilhar</b> (quadrado com seta ↑).</li>
@@ -51,18 +50,18 @@ export function render() {
   </div>
 
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">🔒</span><h3>Privacidade</h3></div></div>
+    <div class="card-head"><div class="ttl"><h3>Privacidade</h3></div></div>
     <ul class="small muted" style="margin:0;padding-left:18px;line-height:1.6">
       <li>Nenhum registro é enviado para servidores — nem para o GitHub.</li>
       <li>Sem anúncios, rastreadores ou analytics.</li>
       <li>Sem fontes ou bibliotecas externas: o app só carrega os próprios arquivos.</li>
       <li>Você pode exportar (backup) e apagar seus dados quando quiser.</li>
     </ul>
-    <button class="btn danger block mt" data-action="wipe">🗑️ Apagar todos os meus dados deste aparelho</button>
+    <button class="btn danger block mt" data-action="wipe">Apagar todos os meus dados deste aparelho</button>
   </div>
 
   <div class="card soft">
-    <div class="row between"><span class="small">Cantinho da Ce 🌸 versão ${APP_VERSION}</span><button class="mini-btn" data-action="check-update">🔄 Procurar atualização</button></div>
+    <div class="row between"><span class="small">Cantinho da Ce · versão ${APP_VERSION}</span><button class="mini-btn" data-action="check-update">Procurar atualização</button></div>
   </div>`;
 }
 
@@ -74,7 +73,7 @@ export async function refreshStorageInfo() {
 }
 
 async function confirmSaved(when) {
-  const ok = await confirmSheet({ title: 'O arquivo foi salvo? 💗', text: 'Confirme somente se você viu o arquivo salvo (por exemplo, em Arquivos › iCloud Drive). Assim o app registra a data do último backup.', ok: 'Sim, salvei', cancel: 'Não salvei' });
+  const ok = await confirmSheet({ title: 'O arquivo foi salvo?', text: 'Confirme somente se você viu o arquivo salvo (por exemplo, em Arquivos › iCloud Drive). Assim o app registra a data do último backup.', ok: 'Sim, salvei', cancel: 'Não salvei' });
   if (ok) { await setSetting('lastBackup', when); hearts(6); toast('Backup registrado 🌸'); }
   else toast('Tudo bem — o último backup não foi alterado.');
   rerender();
@@ -128,7 +127,7 @@ export const actions = {
     if (!obj || obj.format !== BACKUP_FORMAT) return toast('Este arquivo não é um backup do Cantinho da Ce.');
     if (obj.encrypted) {
       if (!cryptoAvailable()) return toast('Este navegador não consegue abrir backups protegidos.');
-      openSheet(`<h2>Backup protegido 🔒</h2>
+      openSheet(`<h2>Backup protegido</h2>
         <label class="field"><span>Senha do backup</span><input class="input" id="pw" type="password" autocomplete="current-password"></label>
         <div class="sheet-actions"><button class="btn ghost" data-close>Cancelar</button><button class="btn" id="ok">Abrir</button></div>`, {
         onMount(s, close) {
@@ -173,7 +172,7 @@ async function confirmRestore(obj) {
   try { valid = validateBackup(obj); } catch (e) { return toast(e.message, { ms: 5000 }); }
   const when = valid.exportedAt ? new Date(valid.exportedAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : 'data desconhecida';
   const ok = await confirmSheet({
-    title: 'Restaurar este backup? 🌸',
+    title: 'Restaurar este backup?',
     text: `Backup de <b>${esc(when)}</b> com <b>${valid.days.length}</b> dia(s) de registros e <b>${valid.books.length}</b> livro(s)${valid.first ? ` (${fmtShort(valid.first)} a ${fmtShort(valid.last)})` : ''}.<br><br>Isto vai <b>substituir</b> todos os registros atuais deste aparelho (${state.days.size} dia(s)). Se quiser, faça um backup dos dados atuais antes.`,
     ok: 'Substituir e restaurar', danger: true
   });

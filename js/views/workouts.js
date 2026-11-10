@@ -68,26 +68,26 @@ export function render() {
   ${dateBar(date)}
 
   <div class="card lilac">
-    <div class="card-head"><div class="ttl"><span class="emoji">📅</span><h3>Minha semana</h3></div><span class="badge lilac">${weekCount} ${weekCount === 1 ? 'treino' : 'treinos'}</span></div>
+    <div class="card-head"><div class="ttl"><h3>Minha semana</h3></div><span class="badge lilac">${weekCount} ${weekCount === 1 ? 'treino' : 'treinos'}</span></div>
     <div class="week">${week.map((k) => {
       const d = peekDay(k);
       const did = didWorkout(d);
       const full = Object.values(d.workouts || {}).some((w) => { const p = workoutProgress(w); return p.total && p.done === p.total; });
       const cls = full ? 'on' : did ? 'part' : d.rest ? 'rest' : '';
-      return `<div><div class="wd">${weekdayShort(k)}</div><div class="dot ${cls} ${k === todayKey() ? 'today' : ''}">${full ? '💪' : did ? '✨' : d.rest ? '😴' : ''}</div></div>`;
+      return `<div><div class="wd">${weekdayShort(k)}</div><div class="dot ${cls} ${k === todayKey() ? 'today' : ''}">${full ? '✓' : did ? '•' : d.rest ? '–' : ''}</div></div>`;
     }).join('')}</div>
   </div>
 
   <div class="segment" role="tablist">
-    ${list.map((x) => `<button class="${x.id === tid ? 'on' : ''}" data-action="pick-workout" data-id="${x.id}">${esc(x.emoji)} ${esc(x.name)}</button>`).join('')}
+    ${list.map((x) => `<button class="${x.id === tid ? 'on' : ''}" data-action="pick-workout" data-id="${x.id}">${esc(x.name)}</button>`).join('')}
     <button data-action="new-workout" aria-label="Novo treino">＋</button>
   </div>
 
   ${t ? `
   <div class="card">
     <div class="card-head">
-      <div class="ttl"><span class="emoji">${esc(t.emoji)}</span><div><h3>${esc(t.name)} — ${esc(t.subtitle || '')}</h3><div class="tiny muted">${done} de ${exs.length} concluídos</div></div></div>
-      <button class="mini-btn" data-action="edit-workout" data-id="${t.id}">✏️</button>
+      <div class="ttl"><div><h3>${esc(t.name)} — ${esc(t.subtitle || '')}</h3><div class="tiny muted">${done} de ${exs.length} concluídos</div></div></div>
+      <button class="mini-btn" data-action="edit-workout" data-id="${t.id}">Editar</button>
     </div>
     <div class="progress lilac"><span style="width:${pct}%"></span></div>
 
@@ -102,12 +102,12 @@ export function render() {
     <button class="btn ghost block mt" data-action="add-exercise" data-id="${t.id}">＋ Adicionar exercício</button>
   </div>` : '<div class="empty">Nenhum treino cadastrado. Toque em ＋ para criar.</div>'}
 
-  <button class="btn ${day.rest ? 'lilac' : 'soft'} block" data-action="toggle-rest">${day.rest ? '😴 Dia de descanso registrado' : '😴 Registrar dia de descanso'}</button>
+  <button class="btn ${day.rest ? 'lilac' : 'soft'} block" data-action="toggle-rest">${day.rest ? 'Dia de descanso registrado' : 'Registrar dia de descanso'}</button>
 
   <div class="card soft mt">
-    <div class="card-head"><div class="ttl"><span class="emoji">💗</span><h3>Minhas preferências</h3></div><button class="mini-btn" data-action="edit-prefs">✏️</button></div>
+    <div class="card-head"><div class="ttl"><h3>Minhas preferências</h3></div><button class="mini-btn" data-action="edit-prefs">Editar</button></div>
     <ul class="small muted" style="margin:0;padding-left:18px;line-height:1.6">${String(state.settings.preferences || '').split('\n').filter(Boolean).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
-    <p class="tiny faint mt-s">Treinos editáveis, criados por você — não são prescrição clínica. Respeite seu corpo e seu conforto. 🌷</p>
+    <p class="tiny faint mt-s">Treinos editáveis, criados por você — não são prescrição clínica. Respeite seu corpo e seu conforto.</p>
   </div>`;
 }
 
@@ -122,7 +122,7 @@ function exRow(t, e, date) {
         <div class="ex-name">${esc(e.name)}</div>
         <div class="ex-meta">${sr}${e.tnote ? ' · ' + esc(e.tnote) : ''}</div>
       </div>
-      ${e.done ? '<span class="badge">feito 💗</span>' : ''}
+      ${e.done ? '<span class="badge">feito</span>' : ''}
     </div>
     <div class="ex-fields">
       <label class="field"><span>Carga (kg)</span><input type="text" inputmode="decimal" value="${e.load != null && e.load !== '' ? esc(fmtNum(e.load)) : ''}" data-action-input="ex-load" data-id="${t.id}" data-ex="${esc(e.exId)}" placeholder="${last ? esc(fmtNum(last.load)) : '—'}"></label>
@@ -130,8 +130,8 @@ function exRow(t, e, date) {
     </div>
     ${last ? `<div class="ex-last">Última carga: ${esc(fmtNum(last.load))} kg em ${fmtShort(last.date)}</div>` : ''}
     <div class="ex-actions">
-      <button class="mini-btn" data-action="ex-edit" data-id="${t.id}" data-ex="${esc(e.exId)}">✏️ Editar</button>
-      <button class="mini-btn" data-action="ex-history" data-name="${esc(e.name)}">📈 Cargas anteriores</button>
+      <button class="mini-btn" data-action="ex-edit" data-id="${t.id}" data-ex="${esc(e.exId)}">Editar</button>
+      <button class="mini-btn" data-action="ex-history" data-name="${esc(e.name)}">Cargas anteriores</button>
     </div>
   </div>`;
 }
@@ -235,7 +235,7 @@ export const actions = {
     const name = el.dataset.name;
     const h = loadHistory(name).reverse();
     openSheet(`<h2>${esc(name)}</h2>
-      ${h.length ? `<ul class="detail-list">${h.map((x) => `<li><div class="dl-title"><span>${fmtShort(x.date)}</span><span style="color:var(--pink-strong)">${esc(fmtNum(x.load))} kg</span></div><div class="dl-sub">${esc(x.workout)} · ${esc([x.sets ? x.sets + ' ×' : '', x.reps].filter(Boolean).join(' '))}</div></li>`).join('')}</ul>` : '<div class="empty"><span class="big">🌱</span>Nenhuma carga registrada ainda.</div>'}
+      ${h.length ? `<ul class="detail-list">${h.map((x) => `<li><div class="dl-title"><span>${fmtShort(x.date)}</span><span style="color:var(--pink-strong)">${esc(fmtNum(x.load))} kg</span></div><div class="dl-sub">${esc(x.workout)} · ${esc([x.sets ? x.sets + ' ×' : '', x.reps].filter(Boolean).join(' '))}</div></li>`).join('')}</ul>` : '<div class="empty"><span class="big">♡</span>Nenhuma carga registrada ainda.</div>'}
       <div class="sheet-actions"><button class="btn" data-close>Fechar</button></div>`);
   },
 
@@ -263,7 +263,7 @@ function exerciseSheet(tid, exId) {
   const v = te ? { name: te.name, sets: te.sets, reps: te.reps, note: te.note } : se ? { name: se.name, sets: se.sets, reps: se.reps, note: se.tnote } : { name: '', sets: '3', reps: '10–12', note: '' };
   const idx = te ? t.exercises.indexOf(te) : -1;
   openSheet(`
-    <h2>${exId ? '✏️ Editar exercício' : '＋ Novo exercício'}</h2>
+    <h2>${exId ? 'Editar exercício' : '＋ Novo exercício'}</h2>
     <p class="small muted" style="margin-top:-6px">${esc(t.name)} · vale para os próximos treinos e para ${esc(fmtMedium(date))}. Dias anteriores não mudam.</p>
     <div class="form mt">
       <label class="field"><span>Nome</span><input class="input" id="nm" value="${esc(v.name)}" placeholder="ex.: Cadeira adutora"></label>
@@ -314,9 +314,9 @@ function exerciseSheet(tid, exId) {
 function workoutSheet(tid) {
   const t = tid ? clone(findT(tid)) : { id: uid('tr'), name: `Treino ${String.fromCharCode(65 + templates().length)}`, subtitle: '', emoji: '💪', exercises: [] };
   openSheet(`
-    <h2>${tid ? '✏️ Editar treino' : '＋ Novo treino'}</h2>
+    <h2>${tid ? 'Editar treino' : '＋ Novo treino'}</h2>
     <div class="form">
-      <div class="row"><label class="field" style="width:80px"><span>Emoji</span><input class="input" id="em" value="${esc(t.emoji)}"></label>
+      <div class="row"><label class="field" style="width:80px"><span>Emoji</span><input class="input" id="em" value=""></label>
       <label class="field grow"><span>Nome</span><input class="input" id="nm" value="${esc(t.name)}"></label></div>
       <label class="field"><span>Foco</span><input class="input" id="sb" value="${esc(t.subtitle)}" placeholder="ex.: Glúteos e core"></label>
     </div>

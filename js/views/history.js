@@ -16,8 +16,8 @@ export function render() {
   const mode = state.ui.histMode || 'day';
   return `
   <div class="segment">
-    <button class="${mode === 'day' ? 'on' : ''}" data-action="h-mode" data-m="day">📖 Meu diário</button>
-    <button class="${mode === 'charts' ? 'on' : ''}" data-action="h-mode" data-m="charts">📊 Gráficos</button>
+    <button class="${mode === 'day' ? 'on' : ''}" data-action="h-mode" data-m="day">Meu diário</button>
+    <button class="${mode === 'charts' ? 'on' : ''}" data-action="h-mode" data-m="charts">Gráficos</button>
   </div>
   ${mode === 'day' ? dayView() : chartsView()}`;
 }
@@ -44,10 +44,10 @@ function dayView() {
   <div class="grid2">
     <div class="stat"><span class="lbl">Calorias</span><span class="val">${dayKcal(day)}<small style="font-size:13px"> kcal</small></span></div>
     <div class="stat"><span class="lbl">Refeições</span><span class="val">${mealsRegistered(day)}</span><span class="sub">${(day.extras || []).length ? `+ ${day.extras.length} extra(s)` : ''}</span></div>
-    <div class="stat lilac"><span class="lbl">Treino</span><span class="val sm">${day.rest ? 'Descanso 😴' : ws.length ? ws.map((w) => esc(w.name)).join(' + ') : '—'}</span></div>
+    <div class="stat lilac"><span class="lbl">Treino</span><span class="val sm">${day.rest ? 'Descanso' : ws.length ? ws.map((w) => esc(w.name)).join(' + ') : '—'}</span></div>
     <div class="stat lilac"><span class="lbl">Exercícios</span><span class="val">${exercisesDone(day)}${totalEx ? `<small style="font-size:13px">/${totalEx}</small>` : ''}</span></div>
-    <div class="stat peach"><span class="lbl">Fase estimada</span><span class="val sm">${info ? `${PHASES[info.phase].emoji} ${PHASES[info.phase].short}` : '—'}</span><span class="sub">${info ? `dia ${info.cycleDay} do ciclo` : ''}</span></div>
-    <div class="stat peach"><span class="lbl">Humor e energia</span><span class="val sm">${mood ? mood.emoji + ' ' + esc(mood.name) : '—'}</span><span class="sub">${energy ? 'Energia ' + esc(energy.name.toLowerCase()) : ''}</span></div>
+    <div class="stat peach"><span class="lbl">Fase estimada</span><span class="val sm">${info ? `${PHASES[info.phase].short}` : '—'}</span><span class="sub">${info ? `dia ${info.cycleDay} do ciclo` : ''}</span></div>
+    <div class="stat peach"><span class="lbl">Humor e energia</span><span class="val sm">${mood ? esc(mood.name) : '—'}</span><span class="sub">${energy ? 'Energia ' + esc(energy.name.toLowerCase()) : ''}</span></div>
   </div>
 
   ${foodDetail(day)}
@@ -62,13 +62,13 @@ function dayView() {
   </div>
 
   <div class="btn-row">
-    <button class="btn" data-action="h-edit" data-date="${date}">✏️ Editar este dia</button>
+    <button class="btn" data-action="h-edit" data-date="${date}">Editar este dia</button>
   </div>
   <div class="btn-row mt">
-    <button class="btn ghost small" data-action="h-export-txt" data-date="${date}">📄 Exportar texto</button>
-    <button class="btn ghost small" data-action="h-export-pdf" data-date="${date}">🖨️ PDF / imprimir</button>
+    <button class="btn ghost small" data-action="h-export-txt" data-date="${date}">Exportar texto</button>
+    <button class="btn ghost small" data-action="h-export-pdf" data-date="${date}">PDF / imprimir</button>
   </div>
-  ${has ? `<div class="center mt"><button class="link-btn" style="color:#c2334f" data-action="h-delete" data-date="${date}">🗑️ Apagar registros deste dia</button></div>` : ''}
+  ${has ? `<div class="center mt"><button class="link-btn" style="color:#c2334f" data-action="h-delete" data-date="${date}">Apagar registros deste dia</button></div>` : ''}
   `;
 }
 
@@ -77,15 +77,15 @@ function foodDetail(day) {
   const extras = day.extras || [];
   return `
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">🥤</span><h3>Alimentação</h3></div><span class="meal-total">${dayKcal(day)} kcal</span></div>
+    <div class="card-head"><div class="ttl"><h3>Alimentação</h3></div><span class="meal-total">${dayKcal(day)} kcal</span></div>
     ${!meals.length && !extras.length ? '<div class="empty">Nada registrado neste dia.</div>' : `
     <ul class="detail-list">
       ${meals.map((m) => `<li>
-        <div class="dl-title"><span>${esc(m.emoji || '')} ${esc(m.mealName || m.id)}${m.time ? ` <span class="small muted">· ${esc(m.time)}</span>` : ''}</span><span style="color:var(--pink-strong)">${mealKcal(m)} kcal</span></div>
+        <div class="dl-title"><span>${esc(m.mealName || m.id)}${m.time ? ` <span class="small muted">· ${esc(m.time)}</span>` : ''}</span><span style="color:var(--pink-strong)">${mealKcal(m)} kcal</span></div>
         ${m.items.map((it) => `<div class="mt-s"><div class="small" style="font-weight:700">• ${esc(it.name)} — ${Number(it.kcal) || 0} kcal${it.edited ? ' <span class="badge gray">ajustado</span>' : ''}${it.custom ? ' <span class="badge gray">avulso</span>' : ''}</div>
-          ${(it.ingredients || []).length ? `<ul>${it.ingredients.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>` : ''}${it.note ? `<div class="dl-sub">📝 ${esc(it.note)}</div>` : ''}</div>`).join('')}
+          ${(it.ingredients || []).length ? `<ul>${it.ingredients.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>` : ''}${it.note ? `<div class="dl-sub">${esc(it.note)}</div>` : ''}</div>`).join('')}
       </li>`).join('')}
-      ${extras.length ? `<li><div class="dl-title"><span>➕ Extras</span><span style="color:var(--pink-strong)">${extras.reduce((s, e) => s + (Number(e.kcal) || 0), 0)} kcal</span></div>
+      ${extras.length ? `<li><div class="dl-title"><span>Extras</span><span style="color:var(--pink-strong)">${extras.reduce((s, e) => s + (Number(e.kcal) || 0), 0)} kcal</span></div>
         <ul>${extras.map((e) => `<li>${esc(e.name)}${e.qty ? ' (' + esc(e.qty) + ')' : ''} — ${Number(e.kcal) || 0} kcal${e.time ? ' · ' + esc(e.time) : ''}</li>`).join('')}</ul></li>` : ''}
     </ul>
     <div class="row between mt" style="font-weight:800"><span>Total do dia</span><span style="color:var(--pink-strong)">${dayKcal(day)} kcal</span></div>`}
@@ -96,16 +96,16 @@ function workoutDetail(day) {
   const ws = workoutEntries(day);
   return `
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">💪</span><h3>Treinos</h3></div>${day.rest ? '<span class="badge lilac">descanso 😴</span>' : ''}</div>
-    ${!ws.length ? `<div class="empty">${day.rest ? 'Dia de descanso registrado. 😴💗' : 'Nenhum treino registrado neste dia.'}</div>` : ws.map((w) => {
+    <div class="card-head"><div class="ttl"><h3>Treinos</h3></div>${day.rest ? '<span class="badge lilac">descanso</span>' : ''}</div>
+    ${!ws.length ? `<div class="empty">${day.rest ? 'Dia de descanso registrado.' : 'Nenhum treino registrado neste dia.'}</div>` : ws.map((w) => {
       const p = workoutProgress(w);
       return `<div class="mt-s">
-        <div class="row between"><b>${esc(w.emoji || '')} ${esc(w.name)}${w.subtitle ? ' — ' + esc(w.subtitle) : ''}</b><span class="badge ${p.done === p.total ? 'ok' : 'lilac'}">${p.done}/${p.total}${p.done === p.total ? ' completo' : ''}</span></div>
+        <div class="row between"><b>${esc(w.name)}${w.subtitle ? ' — ' + esc(w.subtitle) : ''}</b><span class="badge ${p.done === p.total ? 'ok' : 'lilac'}">${p.done}/${p.total}${p.done === p.total ? ' completo' : ''}</span></div>
         ${w.duration ? `<div class="small muted mt-s">⏱️ Duração: ${w.duration} min</div>` : ''}
         <ul class="detail-list mt-s">${w.exercises.map((e) => `<li>
-          <div class="dl-title"><span>${e.done ? '✅' : '⬜️'} ${esc(e.name)}</span><span class="small" style="color:${e.done ? 'var(--pink-strong)' : 'var(--ink-faint)'}">${e.load != null && e.load !== '' ? esc(fmtNum(e.load)) + ' kg' : ''}</span></div>
-          <div class="dl-sub">${esc([e.sets ? e.sets + ' ×' : '', e.reps].filter(Boolean).join(' '))}${e.done ? '' : ' · pendente'}${e.notes ? ' · 📝 ' + esc(e.notes) : ''}</div></li>`).join('')}</ul>
-        ${w.notes ? `<div class="notice mt-s">📝 ${esc(w.notes)}</div>` : ''}
+          <div class="dl-title"><span><span class="dchk ${e.done ? 'on' : ''}"></span>${esc(e.name)}</span><span class="small" style="color:${e.done ? 'var(--pink-strong)' : 'var(--ink-faint)'}">${e.load != null && e.load !== '' ? esc(fmtNum(e.load)) + ' kg' : ''}</span></div>
+          <div class="dl-sub">${esc([e.sets ? e.sets + ' ×' : '', e.reps].filter(Boolean).join(' '))}${e.done ? '' : ' · pendente'}${e.notes ? ' · ' + esc(e.notes) : ''}</div></li>`).join('')}</ul>
+        ${w.notes ? `<div class="notice mt-s">${esc(w.notes)}</div>` : ''}
       </div>`;
     }).join('<hr style="border:0;border-top:1px solid var(--line);margin:12px 0">')}
   </div>`;
@@ -117,9 +117,9 @@ function booksDetail(date) {
   if (!fin.length && !st.length) return '';
   return `
   <div class="card" data-action="go" data-tab="books" style="cursor:pointer">
-    <div class="card-head"><div class="ttl"><span class="emoji">📚</span><h3>Livros</h3></div></div>
-    ${fin.map((b) => `<div class="small">✅ Terminei <b>${esc(b.title)}</b>${b.author ? ' — ' + esc(b.author) : ''} ${b.rating ? stars(b.rating, 13) : ''}</div>`).join('')}
-    ${st.map((b) => `<div class="small mt-s">📖 Comecei <b>${esc(b.title)}</b>${b.author ? ' — ' + esc(b.author) : ''}</div>`).join('')}
+    <div class="card-head"><div class="ttl"><h3>Livros</h3></div></div>
+    ${fin.map((b) => `<div class="small">Terminei <b>${esc(b.title)}</b>${b.author ? ' — ' + esc(b.author) : ''} ${b.rating ? stars(b.rating, 13) : ''}</div>`).join('')}
+    ${st.map((b) => `<div class="small mt-s">Comecei <b>${esc(b.title)}</b>${b.author ? ' — ' + esc(b.author) : ''}</div>`).join('')}
   </div>`;
 }
 
@@ -129,20 +129,20 @@ function cycleDetail(day, info) {
   const sq = findSleep(day.sleepQuality);
   const rows = [
     ['Dia estimado do ciclo', info ? String(info.cycleDay) : '—'],
-    ['Fase estimada', info ? `${PHASES[info.phase].emoji} ${PHASES[info.phase].name}` : '—'],
-    ['Menstruada', bleeding ? 'Sim 🌷' : day.flow ? 'Não' : 'Não registrado'],
-    ['Fluxo', fl && day.flow !== 'none' ? `${fl.emoji} ${fl.name}` : '—'],
-    ['Humor', findMood(day.mood) ? `${findMood(day.mood).emoji} ${findMood(day.mood).name}` : '—'],
+    ['Fase estimada', info ? `${PHASES[info.phase].name}` : '—'],
+    ['Menstruada', bleeding ? 'Sim' : day.flow ? 'Não' : 'Não registrado'],
+    ['Fluxo', fl && day.flow !== 'none' ? `${fl.name}` : '—'],
+    ['Humor', findMood(day.mood) ? `${findMood(day.mood).name}` : '—'],
     ['Energia', findEnergy(day.energy) ? findEnergy(day.energy).name : '—'],
     ['Sono', day.sleepHours != null ? `${fmtNum(day.sleepHours)} h${sq ? ' · ' + sq.name : ''}` : sq ? sq.name : '—']
   ];
   return `
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">🌙</span><h3>Ciclo e bem-estar</h3></div></div>
+    <div class="card-head"><div class="ttl"><h3>Ciclo e bem-estar</h3></div></div>
     <dl class="kv">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-    <div class="mt"><div class="small" style="font-weight:800;margin-bottom:6px">Sintomas</div>
+    <div class="mt"><div class="small" style="font-weight:600;margin-bottom:6px">Sintomas</div>
     ${(day.symptoms || []).length ? `<div class="chips">${day.symptoms.map((s) => `<span class="chip lv${s.intensity}">${esc(s.name)} <span class="lvl">· ${intensityName(s.intensity)}</span></span>`).join('')}</div>` : '<span class="small faint">Nenhum sintoma registrado.</span>'}</div>
-    ${day.cycleNotes ? `<div class="notice mt">📝 ${esc(day.cycleNotes)}</div>` : ''}
+    ${day.cycleNotes ? `<div class="notice mt">${esc(day.cycleNotes)}</div>` : ''}
   </div>`;
 }
 
@@ -191,7 +191,7 @@ function chartsView() {
     const en = list.map((d) => findEnergy(d.energy)?.value).filter(Boolean);
     const moods = new Map();
     for (const d of list) if (d.mood) moods.set(d.mood, (moods.get(d.mood) || 0) + 1);
-    const topM = [...moods.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([m, n]) => `${findMood(m)?.emoji || ''} ${findMood(m)?.name || m} (${n})`).join(', ');
+    const topM = [...moods.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([m, n]) => `${findMood(m)?.name || m} (${n})`).join(', ');
     return { ph, n: list.length, avg: en.length ? en.reduce((s, x) => s + x, 0) / en.length : null, topM };
   });
 
@@ -205,27 +205,27 @@ function chartsView() {
   const hasAny = days.length > 0;
   return `
   <div class="segment"><button class="${rng === 'weeks' ? 'on' : ''}" data-action="c-range" data-r="weeks">Semanas</button><button class="${rng === 'months' ? 'on' : ''}" data-action="c-range" data-r="months">Meses</button></div>
-  ${!hasAny ? '<div class="card"><div class="empty"><span class="big">🌸</span>Os gráficos aparecem conforme você registra seus dias. Só dados reais, nada inventado.</div></div>' : ''}
+  ${!hasAny ? '<div class="card"><div class="empty"><span class="big">♡</span>Os gráficos aparecem conforme você registra seus dias. Só dados reais, nada inventado.</div></div>' : ''}
 
-  <div class="card"><div class="card-head"><div class="ttl"><span class="emoji">💪</span><h3>Frequência de treinos</h3></div><span class="tiny muted">dias com treino</span></div>${bars(trainFreq, { color: '#9a7be0' })}</div>
-  <div class="card"><div class="card-head"><div class="ttl"><span class="emoji">✅</span><h3>Exercícios concluídos</h3></div></div>${bars(exDone)}</div>
-  <div class="card"><div class="card-head"><div class="ttl"><span class="emoji">📈</span><h3>Evolução das cargas</h3></div></div>
-    ${names.length ? `<div class="chips" style="margin-bottom:10px">${names.map((n) => `<button class="chip ${n === selEx ? 'on' : ''}" data-action="c-ex" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>${line(loadPts, { unit: ' kg' })}` : '<div class="empty"><span class="big">🌱</span>Registre cargas nos treinos para ver a evolução.</div>'}
+  <div class="card"><div class="card-head"><div class="ttl"><h3>Frequência de treinos</h3></div><span class="tiny muted">dias com treino</span></div>${bars(trainFreq, { color: '#b77a92' })}</div>
+  <div class="card"><div class="card-head"><div class="ttl"><h3>Exercícios concluídos</h3></div></div>${bars(exDone)}</div>
+  <div class="card"><div class="card-head"><div class="ttl"><h3>Evolução das cargas</h3></div></div>
+    ${names.length ? `<div class="chips" style="margin-bottom:10px">${names.map((n) => `<button class="chip ${n === selEx ? 'on' : ''}" data-action="c-ex" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>${line(loadPts, { unit: ' kg' })}` : '<div class="empty"><span class="big">♡</span>Registre cargas nos treinos para ver a evolução.</div>'}
   </div>
-  <div class="card"><div class="card-head"><div class="ttl"><span class="emoji">🥤</span><h3>Consistência dos registros alimentares</h3></div></div>
+  <div class="card"><div class="card-head"><div class="ttl"><h3>Consistência dos registros alimentares</h3></div></div>
     <div class="tiny muted" style="margin-bottom:4px">Dias com pelo menos uma refeição registrada</div>${bars(mealDays)}
-    <div class="tiny muted" style="margin:10px 0 4px">Dias com todas as ${nPlanned} refeições planejadas registradas</div>${bars(fullMealDays, { color: '#f48fb6' })}
+    <div class="tiny muted" style="margin:10px 0 4px">Dias com todas as ${nPlanned} refeições planejadas registradas</div>${bars(fullMealDays, { color: '#e9a3bd' })}
   </div>
-  <div class="card"><div class="card-head"><div class="ttl"><span class="emoji">🌙</span><h3>Duração dos ciclos</h3></div><span class="tiny muted">dias</span></div>${bars(cyc, { color: '#e84f8c', emptyText: 'Registre pelo menos duas menstruações para ver a duração dos ciclos.' })}</div>
-  <div class="card"><div class="card-head"><div class="ttl"><span class="emoji">🌡️</span><h3>Sintomas mais frequentes</h3></div><span class="tiny muted">nº de dias</span></div>${hbars(topSym, { emptyText: 'Nenhum sintoma registrado ainda.' })}</div>
-  <div class="card"><div class="card-head"><div class="ttl"><span class="emoji">💭</span><h3>Humor e energia ao longo do ciclo</h3></div></div>
-    ${phaseRows.some((r) => r.n) ? phaseRows.map((r) => `<div class="extra-item"><div class="grow"><b>${PHASES[r.ph].emoji} ${PHASES[r.ph].short}</b><div class="tiny muted">${r.n} dia(s) com registro${r.topM ? ' · ' + esc(r.topM) : ''}</div></div>
-      <div style="width:110px"><div class="tiny muted">energia média</div><div class="progress lilac"><span style="width:${r.avg ? (r.avg / 3 * 100).toFixed(0) : 0}%"></span></div><div class="tiny" style="font-weight:800;color:var(--lilac-ink)">${r.avg ? fmtNum(r.avg) + ' / 3' : '—'}</div></div></div>`).join('') : '<div class="empty"><span class="big">🌱</span>Registre humor/energia e sua menstruação para ver esta relação.</div>'}
+  <div class="card"><div class="card-head"><div class="ttl"><h3>Duração dos ciclos</h3></div><span class="tiny muted">dias</span></div>${bars(cyc, { color: '#e63d80', emptyText: 'Registre pelo menos duas menstruações para ver a duração dos ciclos.' })}</div>
+  <div class="card"><div class="card-head"><div class="ttl"><h3>Sintomas mais frequentes</h3></div><span class="tiny muted">nº de dias</span></div>${hbars(topSym, { emptyText: 'Nenhum sintoma registrado ainda.' })}</div>
+  <div class="card"><div class="card-head"><div class="ttl"><h3>Humor e energia ao longo do ciclo</h3></div></div>
+    ${phaseRows.some((r) => r.n) ? phaseRows.map((r) => `<div class="extra-item"><div class="grow"><b>${PHASES[r.ph].short}</b><div class="tiny muted">${r.n} dia(s) com registro${r.topM ? ' · ' + esc(r.topM) : ''}</div></div>
+      <div style="width:110px"><div class="tiny muted">energia média</div><div class="progress lilac"><span style="width:${r.avg ? (r.avg / 3 * 100).toFixed(0) : 0}%"></span></div><div class="tiny" style="font-weight:600;color:var(--lilac-ink)">${r.avg ? fmtNum(r.avg) + ' / 3' : '—'}</div></div></div>`).join('') : '<div class="empty"><span class="big">♡</span>Registre humor/energia e sua menstruação para ver esta relação.</div>'}
   </div>
-  <div class="card"><div class="card-head"><div class="ttl"><span class="emoji">⚡</span><h3>Disposição e treinos</h3></div></div>
-    ${enRows.some((r) => r.n) ? enRows.map((r) => `<div class="hbar"><span class="nm">${r.e.emoji} Energia ${esc(r.e.name.toLowerCase())}</span><span class="bar"><span style="width:${r.n ? (r.w / r.n * 100).toFixed(0) : 0}%"></span></span><span class="n">${r.n ? Math.round(r.w / r.n * 100) + '%' : '—'}</span></div><div class="tiny muted" style="margin:-2px 0 6px">${r.w} de ${r.n} dia(s) com treino</div>`).join('') : '<div class="empty"><span class="big">🌱</span>Registre sua energia para ver esta relação.</div>'}
+  <div class="card"><div class="card-head"><div class="ttl"><h3>Disposição e treinos</h3></div></div>
+    ${enRows.some((r) => r.n) ? enRows.map((r) => `<div class="hbar"><span class="nm">Energia ${esc(r.e.name.toLowerCase())}</span><span class="bar"><span style="width:${r.n ? (r.w / r.n * 100).toFixed(0) : 0}%"></span></span><span class="n">${r.n ? Math.round(r.w / r.n * 100) + '%' : '—'}</span></div><div class="tiny muted" style="margin:-2px 0 6px">${r.w} de ${r.n} dia(s) com treino</div>`).join('') : '<div class="empty"><span class="big">♡</span>Registre sua energia para ver esta relação.</div>'}
   </div>
-  <div class="notice">📊 Os gráficos mostram somente o que você registrou. Relações entre ciclo, energia e treinos são observações dos seus registros — não são diagnósticos médicos.</div>
+  <div class="notice">Os gráficos mostram somente o que você registrou. Relações entre ciclo, energia e treinos são observações dos seus registros — não são diagnósticos médicos.</div>
   `;
 }
 

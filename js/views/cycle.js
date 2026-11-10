@@ -68,18 +68,18 @@ export function render() {
         <div class="phase-ring" style="--p:${Math.min(100, info.cycleDay / info.cycleLength * 100).toFixed(0)}%"><div><b>${info.cycleDay}</b><small>dia do ciclo</small></div></div>
         <div class="grow">
           <div class="tiny muted" style="font-weight:700">${isToday ? 'Hoje' : esc(fmtMedium(date))} · estimativa</div>
-          <div style="font-weight:900;font-size:18px">${ph.emoji} ${ph.name}</div>
+          <div class="ce-serif-title">${ph.name}</div>
           <div class="small mt-s">${info.beyond ? `A menstruação estava estimada para <b>${fmtMedium(info.nextStart)}</b>. Ciclos variam — registre quando vier. 💗` : `Próxima menstruação ${info.nextIsActual ? 'registrada' : 'estimada'}: <b>${fmtMedium(info.nextStart)}</b>`}</div>
         </div>
       </div>
-      ${!info.beyond ? `<div class="notice lilac mt">🦋 Ovulação estimada entre <b>${fmtMedium(info.ovuFrom)}</b> e <b>${fmtMedium(info.ovuTo)}</b> (≈ 12–16 dias antes da próxima menstruação). Janela fértil estimada: ${fmtMedium(info.fertileFrom)} a ${fmtMedium(info.fertileTo)}. É apenas uma estimativa de calendário: não confirma que a ovulação ocorreu e <b>não serve como método contraceptivo</b>.</div>` : ''}
+      ${!info.beyond ? `<div class="notice lilac mt">Ovulação estimada entre <b>${fmtMedium(info.ovuFrom)}</b> e <b>${fmtMedium(info.ovuTo)}</b> (≈ 12–16 dias antes da próxima menstruação). Janela fértil estimada: ${fmtMedium(info.fertileFrom)} a ${fmtMedium(info.fertileTo)}. É apenas uma estimativa de calendário: não confirma que a ovulação ocorreu e <b>não serve como método contraceptivo</b>.</div>` : ''}
     </div>`;
   } else {
-    summary = `<div class="card pink"><div class="card-head"><div class="ttl"><span class="emoji">🌙</span><h3>Comece pelo seu ciclo</h3></div></div>
-      <p class="small muted">Registre o primeiro (e o último) dia da sua menstruação para ver o dia e a fase estimados. 🌷</p></div>`;
+    summary = `<div class="card pink"><div class="card-head"><div class="ttl"><h3>Comece pelo seu ciclo</h3></div></div>
+      <p class="small muted">Registre o primeiro (e o último) dia da sua menstruação para ver o dia e a fase estimados.</p></div>`;
   }
 
-  const chip = (field, o, cur, extra = '') => `<button class="chip ${extra} ${cur === o.id ? 'on' : ''}" data-action="cy-set" data-field="${field}" data-v="${o.id}">${o.emoji ? o.emoji + ' ' : ''}${esc(o.name)}</button>`;
+  const chip = (field, o, cur, extra = '') => `<button class="chip ${extra} ${cur === o.id ? 'on' : ''}" data-action="cy-set" data-field="${field}" data-v="${o.id}">${esc(o.name)}</button>`;
 
   return `
   ${summary}
@@ -88,19 +88,19 @@ export function render() {
     ${calendarHTML(ym, date)}
     ${legend()}
     <div class="btn-row mt">
-      <button class="btn" data-action="period-range">🌷 Registrar menstruação</button>
+      <button class="btn" data-action="period-range">Registrar menstruação</button>
     </div>
   </div>
 
   <div class="section-title"><h2>${isToday ? 'Hoje' : esc(fmtMedium(date))}</h2>${isToday ? '' : '<button class="link-btn" data-action="date-today">← hoje</button>'}</div>
 
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">🩸</span><h3>Sangramento</h3></div></div>
+    <div class="card-head"><div class="ttl"><h3>Sangramento</h3></div></div>
     <div class="chips">${FLOWS.map((f) => chip('flow', f, day.flow)).join('')}</div>
   </div>
 
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">🌡️</span><h3>Sintomas</h3></div><span class="tiny muted">toque: leve → moderada → intensa</span></div>
+    <div class="card-head"><div class="ttl"><h3>Sintomas</h3></div><span class="tiny muted">toque: leve → moderada → intensa</span></div>
     <div class="chips">
       ${symList.map((s) => { const r = symMap.get(s.id); const lv = r ? r.intensity : 0; return `<button class="chip ${lv ? 'lv' + lv : ''}" data-action="sym" data-id="${esc(s.id)}" data-name="${esc(s.name)}">${esc(s.name)}${lv ? ` <span class="lvl">· ${INTENSITIES[lv - 1].name}</span>` : ''}</button>`; }).join('')}
       ${(day.symptoms || []).filter((s) => !symList.some((x) => x.id === s.id)).map((s) => `<button class="chip lv${s.intensity}" data-action="sym" data-id="${esc(s.id)}" data-name="${esc(s.name)}">${esc(s.name)} <span class="lvl">· ${INTENSITIES[s.intensity - 1]?.name || ''}</span></button>`).join('')}
@@ -109,14 +109,14 @@ export function render() {
   </div>
 
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">💭</span><h3>Humor</h3></div></div>
+    <div class="card-head"><div class="ttl"><h3>Humor</h3></div></div>
     <div class="chips">${MOODS.map((m) => chip('mood', m, day.mood)).join('')}</div>
-    <div class="card-head mt"><div class="ttl"><span class="emoji">🔋</span><h3>Energia</h3></div></div>
+    <div class="card-head mt"><div class="ttl"><h3>Energia</h3></div></div>
     <div class="chips">${ENERGY.map((m) => chip('energy', m, day.energy, 'lilac')).join('')}</div>
   </div>
 
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">😴</span><h3>Sono</h3></div></div>
+    <div class="card-head"><div class="ttl"><h3>Sono</h3></div></div>
     <div class="row" style="align-items:flex-end">
       <label class="field" style="width:130px"><span>Horas dormidas</span><input class="input" type="number" inputmode="decimal" min="0" max="24" step="0.5" value="${day.sleepHours ?? ''}" data-action-change="cy-sleep" placeholder="ex.: 7,5"></label>
     </div>
@@ -130,7 +130,7 @@ export function render() {
 
   ${historyCard(st)}
   ${phasesEdu()}
-  <div class="notice mt">🔒 Estimativas baseadas apenas no que você registrou. Ciclos variam de pessoa para pessoa e de mês para mês. Não é diagnóstico médico nem método contraceptivo. O app não muda seus treinos nem sua referência de calorias por causa da fase do ciclo.</div>
+  <div class="notice mt">Estimativas baseadas apenas no que você registrou. Ciclos variam de pessoa para pessoa e de mês para mês. Não é diagnóstico médico nem método contraceptivo. O app não muda seus treinos nem sua referência de calorias por causa da fase do ciclo.</div>
   `;
 }
 
@@ -139,14 +139,14 @@ function historyCard(st) {
   const cycles = st.cycles;
   return `
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">📖</span><h3>Histórico menstrual</h3></div><button class="mini-btn" data-action="cycle-defaults">⚙️</button></div>
+    <div class="card-head"><div class="ttl"><h3>Histórico menstrual</h3></div><button class="mini-btn" data-action="cycle-defaults">Ajustar</button></div>
     <div class="grid2" style="margin-bottom:8px">
       <div class="stat"><span class="lbl">Média do ciclo</span><span class="val">${st.avgCycle ? st.avgCycle + ' <small style="font-size:13px">dias</small>' : '—'}</span><span class="sub">${st.avgCycle ? `${st.basedOn} ciclo(s)${st.minCycle !== st.maxCycle ? ` · ${st.minCycle}–${st.maxCycle} dias` : ''}` : `usando ${st.cycleLength} dias (padrão)`}</span></div>
       <div class="stat"><span class="lbl">Menstruação dura</span><span class="val">${st.avgPeriod ? st.avgPeriod + ' <small style="font-size:13px">dias</small>' : '—'}</span><span class="sub">${st.avgPeriod ? 'média registrada' : `usando ${st.periodLength} dias (padrão)`}</span></div>
     </div>
     ${p.length ? `<ul class="detail-list">${p.slice(0, 12).map((x) => {
       const c = cycles.find((cc) => cc.start === x.start);
-      return `<li><div class="dl-title"><span>🌷 ${fmtShort(x.start)} → ${fmtShort(x.end)}</span><button class="mini-btn" data-action="edit-period" data-start="${x.start}" data-end="${x.end}">✏️</button></div>
+      return `<li><div class="dl-title"><span>${fmtShort(x.start)} → ${fmtShort(x.end)}</span><button class="mini-btn" data-action="edit-period" data-start="${x.start}" data-end="${x.end}">Editar</button></div>
         <div class="dl-sub">${x.days} dia(s) de sangramento registrados${c ? ` · ciclo de ${c.length} dias${c.valid ? '' : ' (fora da média)'}` : ' · ciclo atual'}</div></li>`;
     }).join('')}</ul>` : '<p class="small faint">Nenhuma menstruação registrada ainda.</p>'}
   </div>`;
@@ -156,19 +156,19 @@ function phasesEdu() {
   return `
   <div class="section-title"><h2>Fases do ciclo</h2></div>
   <div class="card soft">
-    <details class="edu"><summary>🌷 Menstruação</summary><ul>
+    <details class="edu"><summary>Menstruação</summary><ul>
       <li>Estrogênio e progesterona geralmente estão baixos.</li>
       <li>Algumas pessoas sentem cólicas, cansaço, dor de cabeça ou desconforto abdominal — outras sentem pouco ou nada.</li></ul></details>
-    <details class="edu"><summary>🌱 Fase folicular</summary><ul>
+    <details class="edu"><summary>Fase folicular</summary><ul>
       <li>Começa no primeiro dia da menstruação e vai até a ovulação (por isso se sobrepõe à menstruação).</li>
       <li>O estrogênio geralmente aumenta.</li>
       <li>Algumas pessoas percebem melhora da energia.</li></ul></details>
-    <details class="edu"><summary>🦋 Ovulação</summary><ul>
+    <details class="edu"><summary>Ovulação</summary><ul>
       <li>Geralmente ocorre cerca de 12–16 dias antes da próxima menstruação, mas varia.</li>
       <li>Podem ocorrer alterações do muco cervical e da libido.</li>
       <li>O app mostra uma estimativa com margem de incerteza — o calendário sozinho não confirma que a ovulação aconteceu.</li>
       <li><b>Este aplicativo não serve como método contraceptivo.</b></li></ul></details>
-    <details class="edu"><summary>🌙 Fase lútea</summary><ul>
+    <details class="edu"><summary>Fase lútea</summary><ul>
       <li>Vai da ovulação até a próxima menstruação.</li>
       <li>A progesterona geralmente aumenta após a ovulação.</li>
       <li>Algumas pessoas notam sintomas de TPM, inchaço, sensibilidade nos seios, alterações de humor ou de apetite.</li></ul></details>
@@ -259,7 +259,7 @@ function periodSheet(start, end) {
   const editing = !!start;
   const s0 = start || state.date;
   openSheet(`
-    <h2>${editing ? '✏️ Editar menstruação' : '🌷 Registrar menstruação'}</h2>
+    <h2>${editing ? 'Editar menstruação' : 'Registrar menstruação'}</h2>
     <div class="form">
       <div class="row">
         <label class="field grow"><span>Primeiro dia</span><input class="input" id="st" type="date" max="${today}" value="${s0}"></label>
@@ -267,7 +267,7 @@ function periodSheet(start, end) {
       </div>
       <p class="tiny muted">Ainda está menstruada? Deixe o último dia em branco — o app marca do primeiro dia até hoje e você ajusta depois.</p>
       <div><div class="tiny muted" style="font-weight:700;margin:0 0 6px 4px">Fluxo predominante (cada dia pode ser ajustado no calendário)</div>
-      <div class="chips" id="fl">${FLOWS.filter((f) => ['light', 'medium', 'heavy'].includes(f.id)).map((f) => `<button class="chip ${f.id === 'medium' ? 'on' : ''}" data-f="${f.id}">${f.emoji} ${f.name}</button>`).join('')}</div></div>
+      <div class="chips" id="fl">${FLOWS.filter((f) => ['light', 'medium', 'heavy'].includes(f.id)).map((f) => `<button class="chip ${f.id === 'medium' ? 'on' : ''}" data-f="${f.id}">${f.name}</button>`).join('')}</div></div>
       <label class="row small"><input type="checkbox" id="keepflow" checked style="width:22px;height:22px;accent-color:#e84f8c"> Manter o fluxo dos dias que já tinham registro</label>
     </div>
     <div class="sheet-actions">${editing ? '<button class="btn danger" id="rm">Apagar este período</button>' : '<button class="btn ghost" data-close>Cancelar</button>'}<button class="btn" id="ok">Salvar</button></div>`, {

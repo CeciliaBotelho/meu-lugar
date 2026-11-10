@@ -55,7 +55,6 @@ export function render() {
   const counts = { read: read.length, reading: allBooks().filter((b) => b.status === 'reading').length, want: allBooks().filter((b) => b.status === 'want').length };
 
   return `
-  <div class="section-title" style="margin-top:4px"><h2>Meus livros</h2></div>
 
   <div class="datebar">
     <button class="arrow" data-action="bk-year" data-n="-1" aria-label="Ano anterior">‹</button>
@@ -65,8 +64,8 @@ export function render() {
 
   <div class="card pink">
     <div class="row between">
-      <div><div class="small muted" style="font-weight:700">Lidos em ${y}</div><div style="font-size:32px;font-weight:900;color:var(--pink-strong)">${read.length}${goal ? `<small style="font-size:15px"> / ${goal}</small>` : ''}</div></div>
-      <button class="mini-btn" data-action="bk-goal">🎯 Meta: ${goal || '—'} ✏️</button>
+      <div><div class="small muted" style="font-weight:700">Lidos em ${y}</div><div class="ce-num">${read.length}${goal ? `<small style="font-size:15px"> / ${goal}</small>` : ''}</div></div>
+      <button class="mini-btn" data-action="bk-goal">Meta: ${goal || '—'}</button>
     </div>
     ${goal ? `<div class="progress mt"><span style="width:${Math.min(100, read.length / goal * 100)}%"></span></div><p class="tiny muted mt-s">${read.length >= goal ? 'Meta do ano alcançada! Que orgulho! 🎀' : `Faltam ${goal - read.length} para a meta — no seu ritmo, sem pressa. 💗`}</p>` : ''}
   </div>
@@ -80,7 +79,7 @@ export function render() {
   <button class="btn block big" data-action="bk-add">＋ Adicionar livro</button>
 
   <div class="segment mt">
-    ${STATUS.map((s) => `<button class="${tab === s.id ? 'on' : ''}" data-action="bk-tab" data-t="${s.id}">${s.emoji} ${s.name} (${counts[s.id]})</button>`).join('')}
+    ${STATUS.map((s) => `<button class="${tab === s.id ? 'on' : ''}" data-action="bk-tab" data-t="${s.id}">${s.name} (${counts[s.id]})</button>`).join('')}
   </div>
 
   ${list.length ? list.map((b) => `
@@ -88,7 +87,7 @@ export function render() {
       <div class="row" style="align-items:flex-start;gap:12px">
         ${cover(b)}
         <div class="grow">
-          <div style="font-weight:800;font-size:15.5px">${esc(b.title)}</div>
+          <div class="ce-serif-title" style="font-size:18px">${esc(b.title)}</div>
           ${b.author ? `<div class="small muted">${esc(b.author)}</div>` : ''}
           ${b.rating ? `<div class="mt-s">${stars(b.rating)} <span class="tiny muted">${fmtNum(b.rating)}</span></div>` : ''}
           <div class="tiny muted mt-s">${[
@@ -98,23 +97,23 @@ export function render() {
             (FORMATS.find((f) => f.id === b.format) || {}).name || '',
             b.genre || ''
           ].filter(Boolean).map(esc).join(' · ')}</div>
-          ${b.notes ? `<div class="small mt-s" style="color:var(--ink-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">📝 ${esc(b.notes)}</div>` : ''}
+          ${b.notes ? `<div class="small mt-s" style="color:var(--ink-soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${esc(b.notes)}</div>` : ''}
           ${b.quote ? `<div class="small mt-s" style="color:var(--lilac-ink);font-style:italic">“${esc(b.quote)}”</div>` : ''}
         </div>
       </div>
-    </div>`).join('') : `<div class="card"><div class="empty"><span class="big">📚</span>${tab === 'read' ? `Nenhum livro terminado em ${y} ainda.` : tab === 'reading' ? 'Nenhum livro em leitura agora.' : 'Sua lista de desejos está vazia.'}</div></div>`}
+    </div>`).join('') : `<div class="card"><div class="empty"><span class="big">♡</span>${tab === 'read' ? `Nenhum livro terminado em ${y} ainda.` : tab === 'reading' ? 'Nenhum livro em leitura agora.' : 'Sua lista de desejos está vazia.'}</div></div>`}
 
-  ${tab === 'read' && read.length ? `<div class="card"><div class="card-head"><div class="ttl"><span class="emoji">📊</span><h3>Livros por mês em ${y}</h3></div></div>${bars(perMonth, { color: '#e84f8c' })}</div>` : ''}
-  <p class="tiny faint center mt">🔒 Seus livros ficam salvos só neste aparelho e entram no backup.</p>`;
+  ${tab === 'read' && read.length ? `<div class="card"><div class="card-head"><div class="ttl"><h3>Livros por mês em ${y}</h3></div></div>${bars(perMonth, { color: '#e63d80' })}</div>` : ''}
+  <p class="tiny faint center mt">Seus livros ficam salvos só neste aparelho e entram no backup.</p>`;
 }
 
 function bookSheet(id) {
   const existing = id ? state.books.get(id) : null;
   const b = existing ? { ...existing } : { id: uid('bk'), title: '', author: '', status: state.ui.bookTab || 'read', startDate: '', endDate: (state.ui.bookTab || 'read') === 'read' ? todayKey() : '', pages: '', rating: 0, format: '', genre: '', notes: '', quote: '' };
   const prevStatus = existing ? existing.status : null;
-  const chipRow = (list, field) => list.map((o) => `<button class="chip ${b[field] === o.id ? 'on' : ''}" data-f="${field}" data-v="${o.id}">${o.emoji} ${o.name}</button>`).join('');
+  const chipRow = (list, field) => list.map((o) => `<button class="chip ${b[field] === o.id ? 'on' : ''}" data-f="${field}" data-v="${o.id}">${o.name}</button>`).join('');
   openSheet(`
-    <h2>${existing ? '✏️ Editar livro' : '📚 Novo livro'}</h2>
+    <h2>${existing ? 'Editar livro' : 'Novo livro'}</h2>
     <div class="form">
       <label class="field"><span>Título</span><input class="input" id="tt" value="${esc(b.title)}" placeholder="ex.: Tudo é rio"></label>
       <label class="field"><span>Autor(a)</span><input class="input" id="au" value="${esc(b.author)}"></label>
@@ -124,14 +123,14 @@ function bookSheet(id) {
         <label class="field grow" id="ed-wrap"><span>Terminei em</span><input class="input" id="ed" type="date" max="${todayKey()}" value="${esc(b.endDate)}"></label>
       </div>
       <div id="rt-wrap"><div class="tiny muted" style="font-weight:700;margin:0 0 4px 4px">Minha nota <span class="faint">(toque de novo na estrela para meia)</span></div>
-        <div class="row"><div id="rt" style="display:flex;gap:2px"></div><span id="rtv" class="small" style="font-weight:800;color:var(--pink-strong)"></span><button class="link-btn tiny" id="rt0">limpar</button></div></div>
+        <div class="row"><div id="rt" style="display:flex;gap:2px"></div><span id="rtv" class="small" style="font-weight:600;color:var(--pink-strong)"></span><button class="link-btn tiny" id="rt0">limpar</button></div></div>
       <div class="row">
         <label class="field" style="width:110px"><span>Páginas</span><input class="input" id="pg" type="number" inputmode="numeric" min="0" value="${esc(b.pages)}"></label>
         <label class="field grow"><span>Gênero</span><input class="input" id="gn" value="${esc(b.genre)}" placeholder="ex.: romance"></label>
       </div>
       <div><div class="tiny muted" style="font-weight:700;margin:0 0 6px 4px">Formato</div><div class="chips" id="fm">${chipRow(FORMATS, 'format')}</div></div>
-      <label class="field"><span>Minhas anotações 📝</span><textarea class="input" id="nt" rows="5" placeholder="O que achei, o que me marcou…">${esc(b.notes)}</textarea></label>
-      <label class="field"><span>Trecho favorito ✨</span><textarea class="input" id="qt" rows="2">${esc(b.quote)}</textarea></label>
+      <label class="field"><span>Minhas anotações</span><textarea class="input" id="nt" rows="5" placeholder="O que achei, o que me marcou…">${esc(b.notes)}</textarea></label>
+      <label class="field"><span>Trecho favorito</span><textarea class="input" id="qt" rows="2">${esc(b.quote)}</textarea></label>
     </div>
     <div class="sheet-actions">${existing ? '<button class="btn danger" id="rm">Excluir</button>' : '<button class="btn ghost" data-close>Cancelar</button>'}<button class="btn" id="ok">Salvar</button></div>`, {
     onMount(s, close) {

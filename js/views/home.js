@@ -91,7 +91,7 @@ export function render() {
       <div class="ce-flower" aria-hidden="true"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"><line x1="6.0" y1="50.0" x2="94.0" y2="50.0"/><line x1="18.9" y1="18.9" x2="81.1" y2="81.1"/><line x1="50.0" y1="6.0" x2="50.0" y2="94.0"/><line x1="81.1" y1="18.9" x2="18.9" y2="81.1"/></svg></div>
       <div class="ce-moods" role="group" aria-label="Humor de hoje">
         ${QUICK.map((q) => { const m = findMood(q.id); return `<button class="${day.mood === q.id ? 'chosen' : ''}" data-action="quick-mood" data-mood="${q.id}" aria-label="${esc(m.name)}" aria-pressed="${day.mood === q.id}"><span>${q.svg ? ico(q.svg, 'ce-mood-svg') : q.g}</span><small>${esc(m.name)}</small></button>`; }).join('')}
-        <button class="${otherMood ? 'chosen' : ''}" data-action="open-checkin" aria-label="Outros humores"><span>${otherMood ? otherMood.emoji : '…'}</span><small>${otherMood ? esc(otherMood.name) : 'Outro'}</small></button>
+        <button class="${otherMood ? 'chosen' : ''}" data-action="open-checkin" aria-label="Outros humores"><span>…</span><small>${otherMood ? esc(otherMood.name) : 'Outro'}</small></button>
       </div>
     </div>
 
@@ -146,25 +146,25 @@ function shelf() {
 export function openCheckin(date = todayKey()) {
   const d = peekDay(date);
   let flushJournal = () => {};
-  const chipRow = (list, field, cur) => list.map((o) => `<button class="chip ${cur === o.id ? 'on' : ''}" data-ck="${field}" data-v="${o.id}">${o.emoji} ${esc(o.name)}</button>`).join('');
+  const chipRow = (list, field, cur) => list.map((o) => `<button class="chip ${cur === o.id ? 'on' : ''}" data-ck="${field}" data-v="${o.id}">${esc(o.name)}</button>`).join('');
   openSheet(`
     <h2>Registrar meu dia</h2>
     <p class="small muted" style="margin:-6px 0 12px">${esc(fmtLong(date))}</p>
     <div class="form">
-      <div><div class="small" style="font-weight:800;margin-bottom:6px">Como você está? 💭</div><div class="chips" id="ck-mood">${chipRow(MOODS, 'mood', d.mood)}</div></div>
-      <div><div class="small" style="font-weight:800;margin-bottom:6px">Energia</div><div class="chips" id="ck-energy">${chipRow(ENERGY, 'energy', d.energy)}</div></div>
+      <div><div class="small" style="font-weight:600;margin-bottom:6px">Como você está?</div><div class="chips" id="ck-mood">${chipRow(MOODS, 'mood', d.mood)}</div></div>
+      <div><div class="small" style="font-weight:600;margin-bottom:6px">Energia</div><div class="chips" id="ck-energy">${chipRow(ENERGY, 'energy', d.energy)}</div></div>
       <div class="row" style="align-items:flex-end">
         <label class="field" style="width:120px"><span>Horas dormidas</span><input class="input" id="ck-sleep" type="number" inputmode="decimal" min="0" max="24" step="0.5" value="${d.sleepHours ?? ''}" placeholder="ex.: 7,5"></label>
         <div class="grow"><div class="tiny muted" style="font-weight:700;margin:0 0 4px 4px">Qualidade do sono</div><div class="chips" id="ck-sq">${chipRow(SLEEP_QUALITY, 'sleepQuality', d.sleepQuality)}</div></div>
       </div>
       <label class="field"><span>Como foi meu dia? 💗</span><textarea class="input journal" id="ck-journal" placeholder="Escreva livremente…">${esc(d.journal || '')}</textarea></label>
       <div class="btn-row">
-        <button class="btn soft small" data-close data-goto="food">🥤 Refeições</button>
-        <button class="btn soft small" data-close data-goto="workouts">💪 Treino</button>
-        <button class="btn soft small" data-close data-goto="cycle">🌙 Sintomas</button>
+        <button class="btn soft small" data-close data-goto="food">Refeições</button>
+        <button class="btn soft small" data-close data-goto="workouts">Treino</button>
+        <button class="btn soft small" data-close data-goto="cycle">Sintomas</button>
       </div>
     </div>
-    <div class="sheet-actions"><button class="btn" data-close>Pronto 💗</button></div>
+    <div class="sheet-actions"><button class="btn" data-close>Pronto</button></div>
   `, {
     onMount(sheet) {
       const save = async (fn) => { await updateDay(date, fn); registerToast(); };

@@ -18,28 +18,28 @@ export function render() {
   return `
   ${dateBar(date)}
   <div class="card pink">
-    <div class="row between"><div><div class="small muted" style="font-weight:700">Total do dia</div><div style="font-size:30px;font-weight:900;color:var(--pink-strong)">${kcal} <small style="font-size:15px">kcal</small></div></div>
-    <div class="center"><div class="tiny muted" style="font-weight:700">Referência</div><button class="mini-btn" data-action="edit-ref">${ref} kcal ✏️</button></div></div>
+    <div class="row between"><div><div class="small muted" style="font-weight:700">Total do dia</div><div class="ce-num">${kcal} <small style="font-size:15px">kcal</small></div></div>
+    <div class="center"><div class="tiny muted" style="font-weight:700">Referência</div><button class="mini-btn" data-action="edit-ref">${ref} kcal</button></div></div>
     <div class="progress mt"><span style="width:${pct}%"></span></div>
-    <p class="tiny muted mt-s">Referência pessoal e configurável — não é limite nem prescrição. Valores calóricos são estimativas editáveis. 💗</p>
+    <p class="tiny muted mt-s">Referência pessoal e configurável — não é limite nem prescrição. Valores calóricos são estimativas editáveis.</p>
   </div>
 
   ${menu().map((m) => mealCard(m, day)).join('')}
   ${orphanMeals.map(([id, m]) => orphanCard(id, m, day)).join('')}
 
   <div class="card">
-    <div class="card-head"><div class="ttl"><span class="emoji">➕</span><h3>Alimentos extras</h3></div><span class="meal-total">${extrasKcal(day)} kcal</span></div>
+    <div class="card-head"><div class="ttl"><h3>Alimentos extras</h3></div><span class="meal-total">${extrasKcal(day)} kcal</span></div>
     ${(day.extras || []).length ? day.extras.map((e) => `
       <div class="extra-item">
         <div class="grow"><div style="font-weight:700">${esc(e.name)}</div><div class="small muted">${[e.qty, e.time ? 'às ' + e.time : '', e.mealId ? mealName(e.mealId, day) : ''].filter(Boolean).map(esc).join(' · ')}</div></div>
         <b style="color:var(--pink-strong)">${Number(e.kcal) || 0} kcal</b>
-        <button class="mini-btn" data-action="edit-extra" data-uid="${e.uid}" aria-label="Editar">✏️</button>
-      </div>`).join('') : '<p class="small faint">Nenhum extra registrado. Tudo bem registrar qualquer coisa a mais que comer — sem culpa. 🌸</p>'}
-    <button class="btn ghost block mt" data-action="add-extra">➕ Adicionar alimento extra</button>
+        <button class="mini-btn" data-action="edit-extra" data-uid="${e.uid}" aria-label="Editar">Editar</button>
+      </div>`).join('') : '<p class="small faint">Nenhum extra registrado. Tudo bem registrar qualquer coisa a mais que comer — sem culpa.</p>'}
+    <button class="btn ghost block mt" data-action="add-extra">Adicionar alimento extra</button>
   </div>
 
   <div class="btn-row">
-    <button class="btn soft" data-action="edit-menu">✏️ Editar cardápio</button>
+    <button class="btn soft" data-action="edit-menu">Editar cardápio</button>
   </div>
   <p class="tiny faint center mt">Editar o cardápio não altera dias já registrados.</p>
   `;
@@ -59,10 +59,10 @@ function mealCard(m, day) {
   return `
   <div class="card meal-card">
     <div class="card-head">
-      <div class="ttl"><span class="emoji">${esc(m.emoji || '🍽️')}</span><div><h3>${esc(m.name)}</h3><div class="tiny muted">planejado ≈ ${esc(m.time || '')}</div></div></div>
+      <div class="ttl"><div><h3>${esc(m.name)}</h3><div class="tiny muted">planejado ≈ ${esc(m.time || '')}</div></div></div>
       <span class="meal-total">${total} kcal</span>
     </div>
-    <label class="meal-time">🕐 Horário real <input type="time" value="${esc(rec.time || '')}" data-action-change="meal-time" data-meal="${m.id}" aria-label="Horário real de ${esc(m.name)}"></label>
+    <label class="meal-time">Horário real <input type="time" value="${esc(rec.time || '')}" data-action-change="meal-time" data-meal="${m.id}" aria-label="Horário real de ${esc(m.name)}"></label>
     ${m.options.map((o) => optionBtn(m, o, items.find((it) => it.optionId === o.id))).join('')}
     ${customItems.map((it) => optionBtn(m, null, it)).join('')}
     <div class="option-tools" style="margin-top:10px">
@@ -74,7 +74,7 @@ function mealCard(m, day) {
 function orphanCard(id, rec, day) {
   return `
   <div class="card meal-card">
-    <div class="card-head"><div class="ttl"><span class="emoji">${esc(rec.emoji || '🍽️')}</span><div><h3>${esc(rec.mealName || id)}</h3><div class="tiny muted">refeição que não está mais no cardápio</div></div></div><span class="meal-total">${mealKcal(rec)} kcal</span></div>
+    <div class="card-head"><div class="ttl"><div><h3>${esc(rec.mealName || id)}</h3><div class="tiny muted">refeição que não está mais no cardápio</div></div></div><span class="meal-total">${mealKcal(rec)} kcal</span></div>
     ${rec.items.map((it) => optionBtn({ id, name: rec.mealName }, null, it)).join('')}
   </div>`;
 }
@@ -90,12 +90,12 @@ function optionBtn(m, o, sel) {
       <span class="body">
         <span class="row between" style="align-items:flex-start"><span class="name">${esc(src.name)}</span><span class="kcal">≈ ${Number(src.kcal) || 0} kcal</span></span>
         <ul>${(src.ingredients || []).map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
-        ${lt ? `<span class="alt">🥛 ${esc(lt)}</span>` : ''}
-        ${sel && sel.note ? `<span class="small muted" style="display:block;margin-top:4px">📝 ${esc(sel.note)}</span>` : ''}
-        ${sel ? `<span class="sel-note">${sel.edited ? 'Registrado (ajustado neste dia) 💗' : 'Registrado 💗'}</span>` : ''}
+        ${lt ? `<span class="alt">${esc(lt)}</span>` : ''}
+        ${sel && sel.note ? `<span class="small muted" style="display:block;margin-top:4px">${esc(sel.note)}</span>` : ''}
+        ${sel ? `<span class="sel-note">${sel.edited ? 'Registrado · ajustado neste dia' : 'Registrado'}</span>` : ''}
       </span>
     </button>
-    ${sel ? `<div class="option-tools"><button class="mini-btn" data-action="edit-item" data-meal="${m.id}" data-uid="${sel.uid}">✏️ Ajustar porção / ingredientes</button></div>` : ''}
+    ${sel ? `<div class="option-tools"><button class="mini-btn" data-action="edit-item" data-meal="${m.id}" data-uid="${sel.uid}">Ajustar porção / ingredientes</button></div>` : ''}
   </div>`;
 }
 
@@ -177,7 +177,7 @@ export const actions = {
   'edit-menu'() { menuSheet(); },
   'edit-ref'() {
     openSheet(`<h2>Referência diária</h2>
-      <p class="small muted">Um número de referência para acompanhar seus registros. Não é limite, meta obrigatória nem prescrição nutricional. 💗</p>
+      <p class="small muted">Um número de referência para acompanhar seus registros. Não é limite, meta obrigatória nem prescrição nutricional.</p>
       <label class="field mt"><span>kcal por dia</span><input class="input" id="ref" type="number" inputmode="numeric" min="0" step="10" value="${state.settings.kcalReference}"></label>
       <div class="sheet-actions"><button class="btn ghost" data-close>Cancelar</button><button class="btn" id="ok">Salvar</button></div>`, {
       onMount(s, close) {
@@ -200,13 +200,13 @@ function itemSheet(mealId, itemUid) {
   const it = itemUid ? (day.meals[mealId]?.items || []).find((x) => x.uid === itemUid) : null;
   const v = it || { name: '', kcal: '', ingredients: [], note: '' };
   openSheet(`
-    <h2>${it ? '✏️ Ajustar neste dia' : '＋ Alimento em ' + esc(m.name)}</h2>
+    <h2>${it ? 'Ajustar neste dia' : '＋ Alimento em ' + esc(m.name)}</h2>
     <p class="small muted" style="margin-top:-6px">${esc(fmtMedium(date))} · muda só o registro deste dia</p>
     <div class="form mt">
       <label class="field"><span>Nome</span><input class="input" id="nm" value="${esc(v.name)}" placeholder="ex.: Iogurte sem lactose"></label>
       <label class="field"><span>Calorias (estimativa)</span><input class="input" id="kc" type="number" inputmode="numeric" min="0" value="${esc(v.kcal)}"></label>
       <label class="field"><span>Ingredientes e quantidades (um por linha) — substitua à vontade</span><textarea class="input" id="ing" rows="5">${esc((v.ingredients || []).join('\n'))}</textarea></label>
-      ${v.lactoseTip ? `<div class="notice lilac">🥛 ${esc(v.lactoseTip)}</div>` : ''}
+      ${v.lactoseTip ? `<div class="notice lilac">${esc(v.lactoseTip)}</div>` : ''}
       <label class="field"><span>Observação</span><input class="input" id="nt" value="${esc(v.note || '')}" placeholder="opcional"></label>
     </div>
     <div class="sheet-actions">
@@ -246,7 +246,7 @@ function extraSheet(extraUid) {
   const e = extraUid ? day.extras.find((x) => x.uid === extraUid) : null;
   const v = e || { name: '', qty: '', kcal: '', time: date === todayKey() ? nowTime() : '', mealId: '' };
   openSheet(`
-    <h2>${e ? '✏️ Editar extra' : '➕ Alimento extra'}</h2>
+    <h2>${e ? 'Editar extra' : 'Alimento extra'}</h2>
     <div class="form">
       <label class="field"><span>O que foi?</span><input class="input" id="nm" value="${esc(v.name)}" placeholder="ex.: Café com leite sem lactose"></label>
       <div class="row">
@@ -298,9 +298,9 @@ function menuSheet() {
     <p class="small muted" style="margin-top:-6px">Mudanças valem para os próximos registros. O histórico guarda o que foi registrado em cada dia.</p>
     ${list.map((m, mi) => `
       <div class="card" style="margin-top:12px">
-        <div class="card-head"><div class="ttl"><span class="emoji">${esc(m.emoji)}</span><div><h3>${esc(m.name)}</h3><div class="tiny muted">≈ ${esc(m.time)} ${m.planned === false ? '· não conta como refeição planejada' : ''}</div></div></div>
-          <button class="mini-btn" data-me="meal" data-i="${mi}">✏️</button></div>
-        ${m.options.map((o, oi) => `<div class="extra-item"><div class="grow"><b>${esc(o.name)}</b><div class="tiny muted">${esc((o.ingredients || []).join(' · '))}</div></div><span class="small" style="font-weight:800;color:var(--pink-strong)">${o.kcal} kcal</span><button class="mini-btn" data-me="opt" data-i="${mi}" data-o="${oi}">✏️</button></div>`).join('')}
+        <div class="card-head"><div class="ttl"><div><h3>${esc(m.name)}</h3><div class="tiny muted">≈ ${esc(m.time)} ${m.planned === false ? '· não conta como refeição planejada' : ''}</div></div></div>
+          <button class="mini-btn" data-me="meal" data-i="${mi}">Editar</button></div>
+        ${m.options.map((o, oi) => `<div class="extra-item"><div class="grow"><b>${esc(o.name)}</b><div class="tiny muted">${esc((o.ingredients || []).join(' · '))}</div></div><span class="small" style="font-weight:600;color:var(--pink-strong)">${o.kcal} kcal</span><button class="mini-btn" data-me="opt" data-i="${mi}" data-o="${oi}">Editar</button></div>`).join('')}
         <button class="btn ghost small block mt" data-me="new-opt" data-i="${mi}">＋ Nova opção</button>
       </div>`).join('')}
     <button class="btn soft block mt" data-me="new-meal">＋ Cadastrar nova refeição</button>
@@ -325,7 +325,7 @@ function mealEditSheet(mi) {
   openSheet(`
     <h2>${mi == null ? 'Nova refeição' : 'Editar refeição'}</h2>
     <div class="form">
-      <div class="row"><label class="field" style="width:80px"><span>Emoji</span><input class="input" id="em" value="${esc(m.emoji)}"></label>
+      <div class="row"><label class="field" style="width:80px"><span>Emoji</span><input class="input" id="em" value=""></label>
       <label class="field grow"><span>Nome</span><input class="input" id="nm" value="${esc(m.name)}" placeholder="ex.: Ceia"></label></div>
       <label class="field" style="width:140px"><span>Horário aproximado</span><input class="input" id="tm" type="time" value="${esc(m.time)}"></label>
       <label class="row small"><input type="checkbox" id="pl" ${m.planned !== false ? 'checked' : ''} style="width:22px;height:22px;accent-color:#e84f8c"> Conta como refeição planejada do dia</label>

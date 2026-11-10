@@ -1,7 +1,7 @@
 // Gráficos em SVG puro (funcionam offline, sem bibliotecas externas).
 import { esc } from './ui.js';
 
-const PINK = '#e84f8c', PINK_SOFT = '#fcd3e3', INK_SOFT = '#8a6878', LINE = '#f6dbe6';
+const PINK = '#e63d80', PINK_SOFT = '#f3d2de', INK_SOFT = '#8e7d82', LINE = '#eadfe1';
 
 /** Barras verticais. data: [{label, value, title?}] */
 export function bars(data, { height = 170, color = PINK, unit = '', maxValue = null, emptyText = 'Sem registros neste período.' } = {}) {

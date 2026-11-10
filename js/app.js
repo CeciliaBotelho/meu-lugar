@@ -14,18 +14,33 @@ import * as books from './views/books.js';
 const views = { home, food, workouts, cycle, history, settings, books };
 const viewEl = document.getElementById('view');
 
+const PAGES = {
+  food: ['Alimentação', 'Nutrir o corpo, sem pressa e sem culpa.'],
+  workouts: ['Treinos', 'Encontrar seu movimento, no seu ritmo.'],
+  cycle: ['Meu ciclo', 'Ouvir seu corpo, um dia de cada vez.'],
+  history: ['Histórico', 'Tudo o que você viveu, guardado com carinho.'],
+  books: ['Minha estante', 'As histórias que fizeram parte de você.'],
+  settings: ['Ajustes', 'Backup, privacidade e armazenamento.']
+};
+function pageHeader(tab) {
+  const p = PAGES[tab];
+  if (!p) return '';
+  const back = tab === 'books' || tab === 'settings' ? '<button class="ce-back" data-action="go" data-tab="home">‹ Início</button>' : '';
+  return `<header class="ce-page">${back}<h1 class="ce-page-title">${p[0]}<span> ♡</span></h1><p class="ce-intro">${p[1]}</p></header>`;
+}
+
 function render({ scrollTop = false } = {}) {
   const v = views[state.tab] || home;
   const y = window.scrollY;
   try {
-    viewEl.innerHTML = v.render();
+    viewEl.innerHTML = (v === home ? '' : pageHeader(state.tab)) + v.render();
   } catch (e) {
     console.error(e);
     viewEl.innerHTML = `<div class="card"><b>Ops, algo deu errado ao mostrar esta tela.</b><p class="small muted mt-s">Seus dados continuam salvos. Tente outra aba ou recarregue o app.</p><pre class="tiny faint" style="white-space:pre-wrap">${String(e && e.message || e).replace(/</g, '&lt;')}</pre></div>`;
   }
   const isHome = (views[state.tab] || home) === home;
   document.getElementById('app').classList.toggle('is-home', isHome);
-  if (isHome) document.querySelector('.top-date').textContent = fmtLong(todayKey()).replace(/ de \d{4}$/, '').toUpperCase();
+  document.querySelector('.top-date').textContent = fmtLong(todayKey()).replace(/ de \d{4}$/, '').toUpperCase();
   document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('active', t.dataset.tab === state.tab));
   if (scrollTop) window.scrollTo(0, 0); else window.scrollTo(0, y);
 }
