@@ -1,4 +1,7 @@
 /* ===== Cantinho da Ce — estilos ===== */
+/* Fonte do nome: Playfair Display (SIL Open Font License), incluída no app — sem chamadas externas */
+@font-face { font-family: "Playfair Display"; font-style: italic; font-weight: 400; font-display: swap; src: url("../fonts/playfair-display-latin-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "Playfair Display"; font-style: italic; font-weight: 600; font-display: swap; src: url("../fonts/playfair-display-latin-600-italic.woff2") format("woff2"); }
 :root {
   --bg: #fff7fa;
   --bg2: #fdeef4;
@@ -554,3 +557,11 @@ details.edu:first-child { border-top: 0; }
 .sheet { background: var(--bg); }
 .toast { box-shadow: 0 8px 28px rgba(42, 31, 37, 0.12); border: 1px solid var(--line); font-weight: 650; }
 .toast.big { background: var(--card); }
+
+/* Nome do app — itálico elegante em dois tons (v1.1.1) */
+.brand-name {
+  font-family: "Playfair Display", ui-serif, Georgia, serif; font-style: italic; font-weight: 600;
+  font-size: 27px; letter-spacing: -0.3px; line-height: 1; color: #c2336d; -webkit-text-fill-color: currentColor;
+}
+.brand-da { font-weight: 400; color: var(--ink); }
+.brand-bow { font-size: 17px; transform: translateY(-2px); }

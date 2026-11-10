@@ -6,7 +6,7 @@ import { isValidKey, todayKey } from './dates.js';
 
 export const BACKUP_FORMAT = 'cantinho-da-ce-backup';
 export const BACKUP_VERSION = 1;
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.1.1';
 
 export function buildBackup() {
   const days = [...state.days.values()].map(clone).sort((a, b) => (a.date < b.date ? -1 : 1));

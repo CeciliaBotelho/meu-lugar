@@ -3,7 +3,7 @@
  * Seus registros ficam no IndexedDB e nunca passam por aqui nem vão para a internet.
  * Para publicar uma nova versão, aumente APP_VERSION.
  */
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.1.1';
 const CACHE = `cantinho-da-ce-${APP_VERSION}`;
 
 const ASSETS = [
@@ -33,7 +33,9 @@ const ASSETS = [
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png',
-  './icons/favicon-64.png'
+  './icons/favicon-64.png',
+  './fonts/playfair-display-latin-400-italic.woff2',
+  './fonts/playfair-display-latin-600-italic.woff2'
 ];
 
 self.addEventListener('install', (event) => {
